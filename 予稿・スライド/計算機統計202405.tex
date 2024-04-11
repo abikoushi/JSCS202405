@@ -67,8 +67,8 @@ v^{(3)}
 \end{pmatrix}
 \end{align*}
 and $x_{nd} \in \{0, 1\}$ is one-hot encoded matrix $(\xi_1, \xi_2, \xi_3)$. 
-This representation not conflict the cases that even when the number of subscripts increases or duplicate, even when there are missing values. 
-This fact means our methods can be easily handle semi-paired samples with multi-modal (see Fig. \ref{fig_mosaic}).
+この表現は, 添え字の数が増えたり重複したり、欠損値が発生したりする場合でも矛盾なく扱える.
+この定式化は図 \ref{fig_mosaic})に示す.
 
 また交互作用項を考えることは
 \begin{align*}
@@ -88,115 +88,98 @@ y_{ijk} &\approx \sum_{r}\prod_{d=1}^D v_{dr}^{x_{nd}} \\
     \footnotesize (b)
     \includegraphics[width=0.7\textwidth]{img/mosaic.pdf} 
     \end{tabular}
-    \caption{Conceptual view for semi-pared data integration. (a)Arbitrary $m$-way tensor can be replanted as tidy-format. The left matrices and the right tidy data structure are equivalent to each other. The all of the index set $\xi$ is map to dummy encoded vectors $x_n$ (b) Data that is difficult to represent as a multidimensional array, can also be stored as tidy-format. White cell indicates a missing value.}
+    \caption{semi-pared なデータの統合. (a)多次元配列は右に示す形式（tidy-format）でも表現できる.  (b) 多次元配列の形式でまとめるのが難しいデータを tidy-formatで保管することもできる. ここで白いセルは欠測を意味する.}
     \label{fig_mosaic}
 \end{figure}
 
 \subsection{モデル}
 
 \begin{align}
-y_n & \sim \normal\left(y_n \mid \sum_{l=1}^L \prod_{d=1}^D v_{dl}^{x_{nd}}, \lambda^{-1}\right) \label{eq_mod1}\\
-v_{dl} & \sim \normal(v_{dl} | 0,\tau^{-1}) \label{eq_prior1}\\
+y_n &\sim \normal\left(y_n \mid \sum_{l=1}^L \prod_{d=1}^D v_{dl}^{x_{nd}}, \lambda^{-1}\right) \label{eq_mod1}\\
 \lambda & \sim \gam(\lambda | a,b) \nonumber
 \end{align}
-ここで $V=(v_{dl})$ は $D \times L$  行列, 
-%where $V$ is a $(D \times L)$ matrix with $v_{dl}$ as the $(d,l)$-th element and $\gam(x|a,b)$ is gamma distribution with shape and rate parameters $a$ and $b$, respectively.
+ここで $V=(v_{dl})$ は $D \times L$  行列, $\gam(x|a,b)$ は形状パラメータとレートパラメータがそれぞれ $a$ と $b$のガンマ分布を表す.
 
-
-\paragraph{Non-negative constraint}
-For realizing non-negative constraint,  use the following truncated normal prior distribution, instead of the normal prior distribution in Eq.\ref{eq_prior1}:
-\begin{equation}
-v_{dl} \sim \truncnorm(v_{dl} | 0, \tau^{-1}) \label{eq_prior2}
-\end{equation}
-where $\truncnorm(x | \mu, \sigma^2)$ is left truncated normal distribution (truncated at 0) with the mean parameter $\mu$ and the variance parameter $\sigma^2$, respectively. 
-Note that truncated normal density can be written as follows:
+$v_{dl}$ の事前分布については, 次のように非負制約の有無によって使い分ける：
+\begin{align}
+v_{dl} & \sim \normal(v_{dl} | 0,\tau^{-1}), \quad  \mbox{（非負のとき）} \label{eq_prior1}, \\
+v_{dl} & \sim \truncnorm(v_{dl} | 0, \tau^{-1}), \quad  \mbox{（負の値を許すとき）} \label{eq_prior2}
+\end{align}
+ここで $\truncnorm(x | \mu, \sigma^2)$ は0で左側を切断された正規分布である.
+この切断正規分布は次のように書ける：
 \begin{equation*}
    \truncnorm(x | \mu, \sigma^2) \propto    \normal(x | \mu, \sigma^2) \one(x) 
 \end{equation*}
-where $\one(x)$ is indicator function as follows:
+ウェレここで $\one(x)$ は次の指標関数とした：
 \begin{align*}
     \one(x)=\begin{cases} 1 & x>0\\
     0 &x \leq 0\end{cases}.
 \end{align*}
+非負制約の有無は$v_{d,l}$ごとに設定できるとしても, この節の議論に矛盾は生じないが, 我々の実装では第1引数で指定された変数のみに負の値を許すことにした. これは$1=(-1)\times(-1)$によって解釈が煩雑になるのを避けるためである.
 
-In principle, $v_dl$, which is constrained to be non-negative, can be selected for each subscript $d$, but in our implementation, only $d$ specified as the first variable allows negative values (\verb|constraint = SN| mode in the package \verb|moltenCP|). 
-This is to avoid complicated interpretations of $(-1)\times(-1)$. Depending on the order on the columns, we can choose a variable which takes a negative value.
-
-\paragraph{Auxiliary variables}
-When the support of the distribution of $y$ is clearly restricted, we introduce the following auxiliary variable $z_n$ in the model of Eq.\ref{eq_mod1}.
+\paragraph{中間変数}
+次にモダリティによって $y$ の取りうる値の範囲が明確に変わる場合を考える.
+例を上げると, データに負の値が生じないことが明らかなとき0を1と予測することと-1と予測することは対称に評価できない.
+%観測モデルに正規分布を仮定することは当てはまりの誤差を左右対称に評価することを意味する.
+そのため, 分布の台の変化に対応すべく, 次の中間的な変数 $z_n$を考える.
 \begin{equation}
-    y_n = A(z_n), \quad z_n \sim \mathcal{N}\left(\sum_{l=1}^L \prod_{d=1}^Dv_{dl}^{x_{nd}}, \lambda^{-1}\right).
+y_n = A(z_n), \quad z_n \sim \mathcal{N}\left(\sum_{l=1}^L \prod_{d=1}^Dv_{dl}^{x_{nd}}, \lambda^{-1}\right).
 \end{equation}
-The function $A(x)$  can be chosen as follows:
+関数 $A(x)$ 次のように選択する.
 \begin{itemize}
-\item If the observed $y_n$ takes continuous values with no exact zeros, we would use an identity function 
+\item $y_n$ が実数（連続）値をとるとき： 
 $$
 A(x)=x.
 $$
-    \item 
-$y_n$ is non-negative:
+\item $y_n$ が非負のとき:
 $$
 A(x)=\begin{cases}x, &x>0\\0 &x\leq 0\end{cases}.
 $$
 \item
-$y_n$ is binary(0 or 1):
+$y_n$ が2値(0 or 1)のとき:
 $$
 A(x)=\one(x).
 $$
 \item
-$y_n$ is non-negative integer:
+$y_n$ が非負の整数のとき:
 $$
 A(x)=\begin{cases}\lceil x\rceil, & x>0\\0 &x\leq 0\end{cases}.
 $$
 \end{itemize}
-Utilizing the normal density as the observation model implies using a symmetric loss function to evaluate the fit.
-When the analyst already knows that there are no negative values in the observed data (for example, in the case of weight, length, or count data), predicting 0 as 1 is not the same as predicting it as -1.
-In these cases, it makes sense to change the support of the model's density function.
 
-When we want to analyze multiple matrices (tensors) simultaneously, the data distribution may vary depending on the modality. 
-We consider this issue in the next.
-
-\paragraph{Multi-modal analysis} Next, we consider that multiple modes and we want to change the distribution for each mode $m$. The observation model in Eq.\ref{eq_mod1} is switched to following Eq.\ref{eq_mod2}  
+\paragraph{Multi-modal analysis} 
+最後に付け加える変更は, 式\ref{eq_mod1} に示した観測モデルを次の 式\ref{eq_mod2}  に置き換えることである.
 \begin{equation}
-    y_{n} = A_{m(n)}(z_{n}), \quad z_{n} \sim \mathcal{N}\left(\sum_{l=1}^L \prod_{d=1}^Dv_{dl}^{x_{ndm}}, \lambda^{-1}_m\right) \label{eq_mod2}    
+y_{n} = A_{m(n)}(z_{n}), \quad z_{n} \sim \mathcal{N}\left(\sum_{l=1}^L \prod_{d=1}^Dv_{dl}^{x_{ndm}}, \lambda^{-1}_m\right) \label{eq_mod2}    
 \end{equation}
-where $m(n)$ is a function which maps index $n$ to mode $m(n)$. 
+ここで、$m(n)$ はインデックス $n$ をモード $m(n)$ にマップする関数です。
+複数のモードを考慮し、各モード $m$ の分布を変更したいと考えます。
 
-\paragraph{Offset factor}
-We often want to correct the observed $y_n$ using the known ``weight" $w_n$; such as, the size when the library size is different, or the time when the time required for measurement is different.
-In such case, we can address this by making a simple change to Eq.\ref{eq_mod2} as following:
-\begin{equation}
-y_n = A_{m(n)}(z), \quad z_n\sim \normal\left(y_n \mid w_n \sum_{l=1}^L \prod_{d=1}^D v_{dl}^{x_{nd}}, \lambda^{-1}\right).\label{eq_mod_off}
-\end{equation}
-When the all elements of $w=(w_1, \ldots , w_N)$ is 1, this observation model is equivalent to Eq.\ref{eq_mod2}.
-
-\paragraph{Log-joint density}
-In above mentioned settings, the log likelihood $\ell(v_{dl})$ is represented as following:
+\paragraph{対数同時密度}
+ここまで述べたモデルに基づき $v_{dl}$ についての対数尤度関数 $\ell(v_{dl})$は次のように書ける：
 \begin{align*}
-& \ell(v_{dl}) =\sum_{n=1}^{N} \log p(z|V, X, w)\\
+& \ell(v_{dl}) =\sum_{n=1}^{N} \log p(z|V, X)\\
 &= \sum_{n=1}^{N}\left(-\frac{\lambda}{2}\left\{ z_n -\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}} \right\}^2\right)+ \C\\
 &= -\sum_{m=1}^M\frac{h_{dlm}}{2}\left(v_{dl}^2-2v_{dl}\frac{\eta_{dlm}}{h_{dlm}}\right) +C,
 \end{align*}
-where $C$ is constant term which not depends on $v_{dl}$, and let $\eta_{dlm}$ and $h_{dlm}$ be as follows;
+ここで $C$ は $v_{dl}$に依存しない定数, $\eta_{dl}$ と $h_{dl}$ は次のように置いた：
 \begin{align}
 \eta_{dlm} &= \sum_n x_{ndm} \prod_{d' \neq d} v_{dl}^{x_{ndm}}\left( z_{nm} - \sum_{l'\neq l} \prod_{d' \neq d} v_{dl}^{x_{ndm}} \right) \label{eq_eta}\\
 h_{dlm} &= \sum_n \lambda_m x_{ndm} \prod_{d' \neq d} v_{dl}^{2x_{ndm}}. \label{eq_h}
 \end{align}
 
-In the next subsection, we derive the variational EM algorithm from this logarithmic joint density.
-
-\subsection{Estimation procedure}
+\subsection{変分ベイズ法}
 \label{est_sec}
-\subsubsection{Variationl EM algorithm}
-This subsection we derived estimator of the latent variables based on the variationl EM algorithm\cite{Jordan}. 
-Using mean-field approximation (i.e. suppose that variational posterior distributions $q(v_{dl})$ and $q(\lambda$ are independent) and let $\langle x \rangle$ be the expectation of $x$ under the variational posterior distribution, we get following variational posterior of $v_{dl}$ as following; 
+この節では変分EMアルゴリズム\cite{Jordan}に基づき, 提案モデルについての推定量を導出する. 
+本研究では平均場近似の仮定を置く. すなわち, 近似事後分布が互いに独立とした下でカルバックライブラ情報量の意味で事後分布を近似する$q(v_{dl})$ と $q(\lambda)$ を求める. また変分事後分布による$x$の期待値を $\langle x \rangle$ と表記する.
+変分事後分布として,  次を得る.
 \begin{align}
 q(v_{dl})= \begin{cases}
-\normal(\mu_{dl}, \sigma_{dl}) & \mbox{if the prior of $v_{dl}$ is not truncated} \\
-\truncnorm(\mu_{dl}, \sigma_{dl}) & \mbox{if the prior of $v_{dl}$ is truncated},     
+\normal(\mu_{dl}, \sigma_{dl}) & \mbox{when the prior of $v_{dl}$ is not truncated} \\
+\truncnorm(\mu_{dl}, \sigma_{dl}) & \mbox{when the prior of $v_{dl}$ is truncated},     
 \end{cases} \label{qv}
 \end{align}
-where $v_{dl}$ and $\sigma_{dl}$ are defined by
+ここで $\mu_{dl}$ と $\sigma_{dl}$ は次のように置いた：
 \begin{align*}
 \mu_{dl} &=\sum_{m=1}^M \frac{\langle \eta_{dlm} \rangle}{\langle h_{dlm}\rangle+\tau/\langle\lambda_m\rangle},\\
 \sigma^2 &=\left(\tau + \sum_{m=1}^M \langle h_{dlm} \rangle \right)^{-1}.
@@ -205,15 +188,15 @@ The variational posterior of $\lambda_{m}$ is,
 \begin{align}
     q(\lambda) = \gam\left(N_m/2 \eta_{dlm}, \left(\sum_m h_{dlm}+\tau\right)/2\right). \label{qlam}
 \end{align}
-The expectations which used for variational updates are listed as following:
+変分ベイズ法の更新式で必要な各確率変数の期待値は次の通りである：
 \begin{align*}
 \langle v_{dl}\rangle &=\mu_{dl} + \sigma_{dl} \phi(-\mu_{dl}/\sigma_{dl})/\Phi(-\mu_{dl}/\sigma_{dl}),\\
 \langle v_{dl}^2 \rangle&=\mu_{dl}^2 + \sigma_{dl}^2 + \mu_{dl} \sigma_{dl} \phi(-\mu_{dl}/\sigma_{dl})/\Phi(-\mu_{dl}/\sigma_{dl}),\\
 \langle \lambda_m \rangle &= (N_m \langle \eta_{dlm} \rangle ) / \left(\sum_m \langle h_{dlm} \rangle +\tau\right).
 \end{align*}
-where $\phi(x)$ and $\Phi(x)$ is standard normal density and distribution function, respectively.
+ここで $\phi(x)$ と $\Phi(x)$ をそれぞれ標準正規分布の確率密度関数, 分布関数とした.
 
-For \textit{local} latent variable $z_n$, we use Monte-Carlo integral, i.e. sample $\tilde z_n$ using variational posterior as follows
+潜在変数 $z_n$, についての期待値はMonte-Carlo積分で評価する.すなわち,$\tilde z_n$ を次のように変分事後分布から疑似乱数でサンプルする：
 \begin{itemize}
 \item Rectified
 \begin{align}
@@ -222,7 +205,7 @@ q(-z_n) = \begin{cases}
     z_n = y_n \mbox{~with probability 1} & y_n>0
 \end{cases}
 \end{align}
-\item binary
+\item Binary
 \begin{align}
 q(-z_n) = \begin{cases}
     \mathcal{TN}(-z_n|-f_n, \sigma_n^2) & y_n=0,\\
@@ -231,20 +214,16 @@ q(-z_n) = \begin{cases}
 \end{align}
 \end{itemize}
 
-The estimation procedure can be briefly summarized as follows:
+要約すると, 近似事後分布を実現するアルゴリズムは次のようになる：
 \begin{itemize}
-\item variational E-step: draw $\tilde{z}_n$ for all $n$s
-\item variational M-step: update $q(V)$ using Eq.\ref{qv} and update $q(\lambda)$ using Eq.\ref{qlam}
+\item 変分 E-ステップ: $\tilde{z}_n$ をサンプルする 
+\item 変分 M-ステップ:  式\ref{qv} を用いて$q(v_{dl})$ を, 式\ref{qlam} を用いて$q(\lambda)$を更新する. 
 \end{itemize}
 
-The appendix\ref{app_imple} describes some notes for efficient implementation.
-
-\section{シミュレーション}
-
-
-当日はデータ分析事例をあわせて報告する.
+当日は推定量を評価するシミュレーションにデータ分析事例をあわせて報告する.
 
 \begin{thebibliography}{9}
-\bibitem{AbeShimamura} Abe K \& Shimamura T. (2023). UNMF: A unified non-negative matrix factorization for multi-dimensional omics data. {\em Briefings in Bioinformatics.} (Under Review).
+\bibitem{AbeShimamura} Abe K \& Shimamura T. (2023). UNMF: A unified non-negative matrix factorization for multi-dimensional omics data. {\em Briefings in Bioinformatics.}  24 (5), bbad253.
+\bibitem{Jordan} Jordan~MI, Ghahramani~Z, Jaakkola~TS \& Saul~LK. (1999). An introduction to variational methods for graphical models. {\em Machine learning}, 37(2), 183-233.
 \end{thebibliography}
 \end{document}  m 
