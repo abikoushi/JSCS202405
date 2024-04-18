@@ -19,6 +19,14 @@
 \usepackage{tikz}
 \usetikzlibrary{shapes,positioning}
 
+%def symbol
+\newcommand{\normal}{\mathcal{N}}
+\newcommand{\exponential}{\mathcal{E}}
+\newcommand{\truncnorm}{\mathcal{TN}}
+\newcommand{\gam}{\mathcal{G}}
+\newcommand{\C}{C}
+\newcommand{\one}{1\!\!1}
+
 \title{テンソル同時分解の拡張による\\オミクスデータの統合}
 \date{2023年6月3日}
 \author {阿部興\footnote{東京医科歯科大学難治疾患研究所} ・島村徹平\footnote{名古屋大学医学系研究科・東京医科歯科大学難治疾患研究所}}
@@ -78,7 +86,62 @@
 \end{itemize}
 }
 \frame{
+\frametitle{切断, Rectified, 離散化}
+\begin{figure}
+\centering
+\begin{tabular}{c|cc}
+\includegraphics[width=0.3\textwidth]{img/norm_truncated} &
+\includegraphics[width=0.3\textwidth]{img/norm_rectified} &
+\includegraphics[width=0.3\textwidth]{img/norm_discretized}
+\end{tabular}
+\caption{\structure{left:} 潜在変数の事前分布. \structure{right:} 観測されるデータのモデル. 一点0で確率を持つ（eg. 重さ, 計数）}
+\end{figure}
+}
+\frame{
+data: $Y=(y_{ijk})$
 
+$y=(y_n) = \operatorname{vec}(Y)$ as given . 
 
+Let the $m$-th subscript of $y_{ijk}$ be $\xi_m$.
+Canonical decomposition and parallel factor analysis (also known as CP decomposition) seeks matrices $v^{(m)}$ such that
+\begin{equation*}
+y_{ijk} \approx \sum_{l}v_{il}^{(1)} v_{jl}^{(2)} v_{kl}^{(3)}. 
+\end{equation*}
+This equation can be represented as follows:
+\begin{equation}
+y_{n} \approx \sum_{l}\prod_{d=1}^D v_{dr}^{x_{nd}} \label{eq_approx}
+\end{equation}
+where
+\begin{align*}
+V=(v_{dl})=\begin{pmatrix}
+v^{(1)}\\
+v^{(2)}\\
+v^{(3)}
+\end{pmatrix}
+\end{align*}
+}
+\frame{
+\frametitle{モデル0}
+
+式1 $y_{n} \approx \sum_{l} \prod_{d=1}^D v_{dl}^{x_{nd}}$; はややあいまい
+
+次のように書き直す:
+\begin{align}
+y_n & \sim \normal\left(y_n \mid \sum_{l=1}^L \prod_{d=1}^D v_{dl}^{x_{nd}}, \lambda^{-1}\right) \label{eq_mod1}\\
+v_{dl} & \sim \normal(v_{dl} | 0,\tau^{-1}) \label{eq_prior1}\\
+\lambda & \sim \gam(\lambda | a,b) \nonumber
+\end{align}
+
+このモデルを修正・拡張する：
+\begin{itemize}
+\item 非負制約（解釈性）
+\item 分布を変える（マルチオミクス）
+\end{itemize}
+}
+\frame{
+\frametitle{事前分布：非負制約}
+}
+\frame{
+\frametitle{中間変数}
 }
 \end{document}  
