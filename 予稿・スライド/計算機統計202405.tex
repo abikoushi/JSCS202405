@@ -38,16 +38,16 @@
 
 %\maketitle
 \section{はじめに}
-生命科学の分野においては, 生体内に存在する分子を網羅的に観測することが可能になった. 
-これらは考察される対象の分子（これをモダリティと呼ぶことにする）が遺伝子であればゲノミクス，転写物であればトランスクリプトミクス，代謝物であればメタボロミクスといった様々な分野があり, 総称としてはオミクス（omics）データと呼ばれる. 中でも, ある1つのサンプルに対し複数のモダリティを計測するマルチオミクスデータは, 生命現象についての豊富な情報を持つものとして注目されている. 一方で, マルチオミクスデータをどのように分析すべきかは未だ議論が続いている.
+生命科学の分野においては, 生体内に存在する分子を網羅的に観測する研究が盛んに行われている. 
+これらの研究は対象となる分子（モダリティ）によって, ゲノムDNAを対象とするゲノミクス，転写物を対象とするトランスクリプトミクス，代謝物を対象とするメタボロミクスなど様々な分野に分類される. これらの分野で得られるデータは総称してオミクス（omics）データと呼ばれる.　特に, ある1つのサンプルに対し複数のモダリティを計測するマルチオミクスデータは, 生命現象についての豊富な情報を持つものとして注目されている. 一方で, マルチオミクスデータをどのように分析すべきかについては, 未だ議論が続いている.
 
 複数のモダリティをまたいだ分析を難しくする原因の一つとして, 計測に関わる現実的な制約のために, 対応があるサンプルとないサンプルが混在する semi-paired なデータが多く見られることがあげられる\cite{Heumos}. また, あるモダリティは計数データ, あるモダリティは連続値のデータといった形で, データの分布が大きく変わることも統一的な分析を難しくしている.
 
-Abe \& Shimamura (2023) はNMFを拡張し, 多次元のデータを柔軟に分析するモデルとして,  unified non-negative matrix factorization (UNMF) を提案した\cite{AbeShimamura}. しかし, UNMFではポアソン分布を仮定していたため, 本報告ではより幅広いクラスのデータを柔軟にあつかえる枠組みについて提案する.
+Abe \& Shimamura (2023) は非負値行列因子分解（Nonnegative Matrix Factorization; NMF）を拡張し, 多次元のデータを柔軟に分析するモデルとして,  unified non-negative matrix factorization (UNMF) を提案した\cite{AbeShimamura}. しかし, UNMFではポアソン分布を仮定していたため, 本報告ではより幅広いクラスのデータを柔軟にあつかえる枠組みについて提案する.
 
 \section{モデルと推定アルゴリズム}
 \subsection{概要}
-確率モデルとしての定式化の前に, まず我々が提案する手法の概要を動機となる例を通じて述べる. 簡単のため, 3階のテンソル $Y=(y_{i,j,k})$を考える. ここでは単に添字（$i,j,k$）を定めたとき値が1つに決まるような変数（多次元配列）という意味でテンソルという語を用いる. さらに $\operatorname{vec}(Y)$ を適当な順番で $Y$ のすべての要素をベクトルに配置する作用素とする. 
+確率モデルとしての定式化の前に, 提案手法の概要を動機となる例を通じて述べる. 簡単のため, 3階のテンソル $Y=(y_{i,j,k})$を考える. ここでは単に添字（$i,j,k$）を定めたとき値が1つに決まるような変数（多次元配列）という意味でテンソルという語を用いる. さらに $\operatorname{vec}(Y)$ を適当な順番で $Y$ のすべての要素をベクトルに配置する作用素とする. 
 CP分解（正準分解や並行因子分解とも呼ばれる）ではそれぞれの要素$v_{il}^{(1)}$, $v_{jl}^{(2)}$, $ v_{kl}^{(3)}$ が次を満たすような行列 $V^{(k)}$ ($k=1,2,3$)を作る.
 \begin{equation*}
 y_{ijk} \approx \sum_{l}v_{il}^{(1)} v_{jl}^{(2)} v_{kl}^{(3)}. 
@@ -69,36 +69,30 @@ v^{(3)}
 また$x_{nd}$において, モダリティとの2次の交互作用項を考えることはモダリティごとに変化することを許すことと同値である. 
 例えば, 行の軸では対応があるが列の軸では対応のない行列を分析するときは, 次のように列ダミーとモダリティの交互作用項を考える.
 \begin{align*}
-y_{ijk} &\approx \sum_{l}\prod_{d=1}^D v_{dl}^{x_{nd}} \\
-&=\sum_{l}v_{il}^{(1)} v_{jkl}^{(2)} v_{kl}^{(3)} \quad \mbox{when $X$ consisiting from $\xi_1$, $\xi_2 \cdot \xi_3$, and $\xi_3$}
+y_{ijk} &\approx \sum_{l}\prod_{d=1}^D v_{dl}^{x_{nd}} =\sum_{l}v_{il}^{(1)} v_{jkl}^{(2)} v_{kl}^{(3)} \quad \mbox{when $X$ consisiting from $\xi_1$, $\xi_2 \cdot \xi_3$, and $\xi_3$}
 \end{align*}
-実際にはこれ以外にも様々な$x_{nd}$を考え得る. このこともまた semi-paired なデータの分析にとって有益である. 
+実際にはこの他にも様々な$x_{nd}$を考え得る. このこともまた semi-paired なデータの分析にとって有益である. 次の節でここまでの議論を確率モデルとして定式化する.
 
 \begin{figure}
     \centering
-    \begin{tabular}{c|c}
-    \footnotesize (a)
-    \includegraphics[width=0.2\textwidth]{img/threeway.pdf} &
-    \footnotesize (b)
-    \includegraphics[width=0.7\textwidth]{img/mosaic.pdf} 
+    \begin{tabular}{c}
+    \includegraphics[width=0.62\textwidth]{img/mosaic_mm.pdf} \\
+    \includegraphics[width=0.62\textwidth]{img/mosaic_an.pdf} 
     \end{tabular}
-    \caption{semi-pared なデータの統合. (a)多次元配列は右に示す形式（tidy-format）でも表現できる.  (b) 多次元配列の形式での対応づけが難しいデータを tidy-formatで保存できる. ここで白いセルは欠測を意味する.}
+    \caption{semi-pared なデータの統合. 多次元配列は右に示す形式（tidy-format）で表現できる.  また多次元配列の形式での対応づけが難しいデータも tidy-formatで表現できる. （上）複数のモダリティからなるデータ. （下）サンプルごとの対応はないが, 関連しあう特徴量についての情報を持つデータ.}
     \label{fig_mosaic}
 \end{figure}
 
-次の節でここまでの議論を確率モデルとして定式化する.
-
 \subsection{モデル}
-まずいくつか記号を定める. 大きさ $N$ の組の変数 $(y_n, \xi_n)$, ($n=1,\ldots, N$)が観測されるとする. $\xi_n$ は $y_n$と対応する任意の質的変数のベクトルである. また $y=(y_1, \ldots, y_N)'$, $\Xi=(\xi_1, \ldots \xi_N)'$ とこれらをまとめて表記する.
+まずいくつか記号を定める. 大きさ $N$ の組の変数 $(y_n, \xi_n)$, ($n=1,\ldots, N$)が観測されるとする. $\xi_n$ は $y_n$と対応する任意の質的変数のベクトルである. また $y=(y_1, \ldots, y_N)'$とまとめて表記する. 
 $\xi_n$ は（例えばワンホットエンコーディングを用いることによって）2値変数のベクトル $x_n$ に写すことができる. この記法の下で, 次のデータ生成過程を考える.
 \begin{align}
 y_{n} &= A_{m(n)}(z_{n}), \quad (z_{n} \mid V, \lambda) \sim \mathcal{N}\left(z_n \mid \sum_{l=1}^L \prod_{d=1}^Dv_{dl}^{x_{ndm}}, \lambda^{-1}_m\right)  \label{eq_mod1}\\
 \lambda & \sim \gam(\lambda | a,b). \nonumber
 \end{align}
-ここで $V=(v_{dl})$ は $D \times L$  行列であり推定の対象となる潜在変数である. $\gam(x|a,b)$ は形状パラメータとレートパラメータがそれぞれ $a$ と $b$のガンマ分布を表す. また $z_n$, $A_{m}(z)$, $m(n)$ という新しい記号を導入したので順に説明する. これらはモダリティによって $y$ の取りうる値の範囲が明確に変わる場合を考えるためのものである.
+ここで $\normal(x|\mu,\sigma^2)$は平均と分散がそれぞれ$\mu$ と $\sigma^2$の正規分布を表し, $\gam(x|a,b)$ は形状パラメータとレートパラメータがそれぞれ $a$ と $b$のガンマ分布を表す. $V=(v_{dl})$ は $D \times L$  行列であり推定の対象となる潜在変数である. また, $z_n$, $A_{m}(z)$, $m(n)$ という新しい記号を導入したので順に説明する. これらはモダリティによって $y$ の取りうる値の範囲が明確に変わる場合を考えるためのものである.
 例を上げると, データに負の値が生じないことが明らかなとき, $0$ を$1$と予測することと$-1$と予測することは対称に評価できない.
-そのため, 分布の台の変化に対応すべく, 次の中間的な変数 $z_n$を考える.
-関数 $A_m(x)$ は次のいずれかから分析者が選択する.
+そのため, 分布の台の変化に対応すべく, 中間的な変数 $z_n$を考え, 関数 $A_m(x)$ を次のいずれかから分析者が選択する.
 \begin{itemize}
 \item $y_m$ が実数（連続）値をとるとき： 
 $$
@@ -114,12 +108,14 @@ $$
 A_m(x)=\one_{[0,\infty)}(x).
 $$
 \item
-$y_n$ が非負の整数のとき:
+$y_m$ が非負の整数のとき:
 $$
-A(x)=\begin{cases}\lceil x\rceil, & x>0\\0 &x\leq 0\end{cases}.
+A_m(x)=\begin{cases}\lfloor x\rfloor, & x>0 \\ 
+0 &x \leq 0
+\end{cases}.
 $$
+ここで $\one_{A}(x)$ は$x \in A$が成り立つとき1, 他の場合０の値を取る指示関数とした.
 \end{itemize}
-ここで $\one_{[0,\infty)}(x)$ は指示関数とした.
 $m(n)$ は $n$ をモダリティを区別する添字に写す関数とした. これにより複数のモダリティを考慮し, 各モダリティの分布を変更できる.
 
 また $v_{dl}$ の事前分布については, 次のように非負制約の有無によって使い分ける.
@@ -137,15 +133,13 @@ v_{dl} & \sim \truncnorm(v_{dl} | 0, \tau^{-1}), \quad  \mbox{（負の値を許
 
 ここまで述べたモデルに基づき $v_{dl}$ についての対数尤度関数 $\ell(v_{dl})$は次のように書ける.
 \begin{align*}
-& \ell(v_{dl}) =\sum_{n=1}^{N} \log p(z|V, X)\\
-&= \sum_{n=1}^{N}\left(-\frac{\lambda}{2}\left\{ z_n -\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}} \right\}^2\right)+ \C\\
+& \ell(v_{dl}) =\sum_{n=1}^{N} \log p(z|V, X)= \sum_{n=1}^{N}\left(-\frac{\lambda}{2}\left\{ z_n -\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}} \right\}^2\right)+ \C\\
 &= -\sum_{m=1}^M\frac{h_{dlm}}{2}\left(v_{dl}^2-2v_{dl}\frac{\eta_{dlm}}{h_{dlm}}\right) +C.
 \end{align*}
 ここでは $v_{dl}$に依存しない項を$C$ とまとめて置き, $\eta_{dl}$ と $h_{dl}$ は次のように置いた.
-\begin{align}
-\eta_{dl} &= \sum_n x_{nd} \prod_{d' \neq d} v_{dl}^{x_{ndm}}\left( z_{n} - \sum_{l'\neq l} \prod_{d' \neq d} v_{dl}^{x_{nd}} \right) \label{eq_eta}\\
-h_{dl} &= \sum_n \lambda x_{n} \prod_{d' \neq d} v_{dl}^{2x_{nd}}. \label{eq_h}
-\end{align}
+\begin{align*}
+\eta_{dl} = \sum_n x_{nd} \prod_{d' \neq d} v_{dl}^{x_{ndm}}\left( z_{n} - \sum_{l'\neq l} \prod_{d' \neq d} v_{dl}^{x_{nd}} \right), \quad  h_{dl} = \sum_n \lambda x_{n} \prod_{d' \neq d} v_{dl}^{2x_{nd}}. %\label{eq_h}
+\end{align*}
 ここから推定のためのアルゴリズムを導くことができる.
 
 \subsection{変分ベイズ法}
@@ -161,8 +155,7 @@ q(v_{dl})= \begin{cases}
 \end{align}
 ここで $\mu_{dl}$ と $\sigma_{dl}$ は次のように置いた.
 \begin{align*}
-\mu_{dl} &=\frac{\langle \eta_{dl} \rangle}{\langle h_{dl}\rangle+\tau/\langle\lambda\rangle},\\
-\sigma^2 &=\left(\tau + \langle h_{dl} \rangle \right)^{-1}.
+\mu_{dl} =\frac{\langle \eta_{dl} \rangle}{\langle h_{dl}\rangle+\tau/\langle\lambda\rangle}, \quad \sigma^2 =\left(\tau + \langle h_{dl} \rangle \right)^{-1}.
 \end{align*}
 $\lambda$ についての変分事後分布として次を得る. 
 \begin{align}
@@ -176,7 +169,7 @@ $\lambda$ についての変分事後分布として次を得る.
 \end{align*}
 ここで $\phi(x)$ と $\Phi(x)$ をそれぞれ標準正規分布の確率密度関数, 分布関数とした.
 
-潜在変数 $z_n$, についての期待値はMonte-Carlo積分で評価する.すなわち, $z_n$のMonte-Carloサンプルを特に $\tilde z_n$ と書くことにすると, $\tilde z_n$ を次の変分事後分布から疑似乱数でサンプルする. 
+潜在変数 $z_n$, についての期待値はMonte-Carlo積分で評価する. $z_n$ のMonte-Carloサンプルを特に $\tilde z_n$ と書くことにし, 次の変分事後分布から疑似乱数でサンプルする. 
 \begin{itemize}
 \item $y_n$ が実数（連続）値をとるとき： 
 \begin{equation}
@@ -185,24 +178,25 @@ z_n=y_n \quad \mbox{(with probability 1)}  \label{qz_iden}
 \item $y_n$ が非負のとき:
 \begin{align}
 q(-z_n) = \begin{cases}
-    \mathcal{TN}(-z_n|-f_n, \sigma_n^2) & y_n=0,\\
-    z_n = y_n \mbox{~with probability 1} & y_n>0
+    \mathcal{TN}(-z_n|-f_n, \sigma_n^2), & y_n=0,\\
+    z_n = y_n \mbox{~with probability 1}, & y_n>0.
 \end{cases} \label{qz_rect}
 \end{align}
 \item $y_n$ が2値(0 or 1)のとき:
 \begin{align}
 q(-z_n) = \begin{cases}
-    \mathcal{TN}(-z_n|-f_n, \sigma_n^2) & y_n=0,\\
-    \mathcal{TN}(z_n|f_n, \sigma_n^2) & y_n=1
+    \mathcal{TN}(-z_n|-f_n, \sigma_n^2), & y_n=0,\\
+    \mathcal{TN}(z_n|f_n, \sigma_n^2), & y_n=1.
 \end{cases}\label{qz_binary}
 \end{align}
 \item $y_n$ が非負の整数のとき:
 \begin{align}
 q(-z_n) = \begin{cases}
-    \mathcal{TN}(-z_n|-f_n, \sigma_n^2) & y_n=0,\\
-    \mathcal{N}(z_n|f_n, \sigma_n^2) \one_{[y_n,y_n+1]}(z_n) \cdot C & y_n > 0
+    \mathcal{TN}(-z_n|-f_n, \sigma_n^2), & y_n=0,\\
+    \mathcal{N}(z_n|f_n, \sigma_n^2) \one_{[y_n,y_n+1]}(z_n) \cdot C, & y_n > 0
 \end{cases}\label{qz_disc}
 \end{align}
+ここで $C$ は $z_n$ に依存しない定数とした.
 \end{itemize}
 
 要約すると, 近似事後分布を実現するアルゴリズムは次のようになる：
