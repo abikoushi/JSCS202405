@@ -105,7 +105,7 @@ $$
 \item
 $y_m$ が2値(0 or 1)のとき:
 $$
-A_m(x)=\one_{[0,\infty)}(x).
+A_m(x)=\one_{(0,\infty)}(x).
 $$
 \item
 $y_m$ が非負の整数のとき:
@@ -126,7 +126,7 @@ v_{dl} & \sim \truncnorm(v_{dl} | 0, \tau^{-1}), \quad  \mbox{（負の値を許
 ここで $\truncnorm(x | \mu, \sigma^2)$ は0で左側を切断された正規分布である.
 この切断正規分布は次のように書ける.
 \begin{equation*}
-   \truncnorm(x | \mu, \sigma^2) \propto    \normal(x | \mu, \sigma^2) \one_{[0,\infty)}(x) 
+   \truncnorm(x | \mu, \sigma^2) \propto  \normal(x | \mu, \sigma^2) \one_{[0,\infty)}(x) 
 \end{equation*}
 
 非負制約の有無は$v_{dl}$ごとに設定できるとしてもこの節の議論に矛盾は生じないが, 我々の実装では指定された1つの変数のみに負の値を許すことにした. これは$1=(-1)\times(-1)$によって解釈が煩雑になるのを避けるためである.
