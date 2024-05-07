@@ -1,4 +1,4 @@
-This is e-pTeX, Version 3.14159265-p3.7.1-161114-2.6 (utf8.euc) (TeX Live 2017) (preloaded format=platex 2018.4.2)  7 MAY 2024 12:56
+This is e-pTeX, Version 3.14159265-p3.7.1-161114-2.6 (utf8.euc) (TeX Live 2017) (preloaded format=platex 2018.4.2)  7 MAY 2024 20:20
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1290,7 +1290,11 @@ LaTeX Font Warning: Font shape `OMS/cmss/m/n' undefined
 File: img/mosaic_an.pdf Graphic file (type pdf)
  <img/mosaic_an.pdf>
 File: img/mosaic_mm.pdf Graphic file (type pdf)
- <img/mosaic_mm.pdf> [3
+ <img/mosaic_mm.pdf>
+Overfull \vbox (7.61449pt too high) detected at line 95
+ []
+
+[3
 
 ] [4
 
@@ -1306,13 +1310,13 @@ File: img/mosaic_mm.pdf Graphic file (type pdf)
 
 ]
 File: img/norm_truncated.pdf Graphic file (type pdf)
-
-<img/norm_truncated.pdf>
+ <img/norm_truncated.pdf>
 File: img/norm_rectified.pdf Graphic file (type pdf)
  <img/norm_rectified.pdf>
 File: img/norm_discretized.pdf Graphic file (type pdf)
- <img/norm_discretized.pdf>
-Overfull \hbox (1.77356pt too wide) in paragraph at lines 208--208
+
+<img/norm_discretized.pdf>
+Overfull \hbox (1.77356pt too wide) in paragraph at lines 209--209
  [][][] 
  []
 
@@ -1324,16 +1328,7 @@ Overfull \hbox (1.77356pt too wide) in paragraph at lines 208--208
 
 ] [13
 
-]
-
-LaTeX Font Warning: Font shape `JT1/mc/m/it' undefined
-(Font)              using `JT1/mc/m/n' instead on input line 269.
-
-
-LaTeX Font Warning: Font shape `JY1/mc/m/it' undefined
-(Font)              using `JY1/mc/m/n' instead on input line 269.
-
-[14
+] [14
 
 ] [15
 
@@ -1349,11 +1344,11 @@ LaTeX Font Warning: Font shape `JY1/mc/m/it' undefined
 \tf@snm=\write8
 \openout8 = `Ëçê^^88ËÜä^^97ÁΩò^^9fËÖüÊ≤ø®^^88202405_Á^^99ËÇ¥ÔºõÁ^^94®.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 292.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 292.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 301.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 301.
  (./Ëçê^^88ËÜä^^97ÁΩò^^9fËÖüÊ≤ø®^^88202405_Á^^99ËÇ¥ÔºõÁ^^94®.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 292.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 292.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 301.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 301.
 Package rerunfilecheck Info: File `Ëçê^^88ËÜä^^97ÁΩò^^9fËÖüÊ≤ø®^^88202405_Á^^99ËÇ¥Ôºõ
 Á^^94®.out' has not changed.
 (rerunfilecheck)             Checksum: 73FE5B30D2389FF6340AB8EF6150B4D1;41.
@@ -1370,13 +1365,13 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 29486 strings out of 493653
- 618679 string characters out of 6148875
- 695637 words of memory out of 5000000
- 32523 multiletter control sequences out of 15000+600000
- 19606 words of font info for 78 fonts, out of 8000000 for 9000
+ 29527 strings out of 493653
+ 619925 string characters out of 6148875
+ 697637 words of memory out of 5000000
+ 32565 multiletter control sequences out of 15000+600000
+ 19557 words of font info for 78 fonts, out of 8000000 for 9000
  929 hyphenation exceptions out of 8191
  56i,24n,67p,10436b,757s stack positions out of 5000i,500n,10000p,200000b,80000s
 
 Output written on Ëçê^^88ËÜä^^97ÁΩò^^9fËÖüÊ≤ø®^^88202405_Á^^99ËÇ¥ÔºõÁ^^94®.dvi (16 pag
-es, 55496 bytes).
+es, 58332 bytes).

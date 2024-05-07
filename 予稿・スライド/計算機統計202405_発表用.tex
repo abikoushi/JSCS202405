@@ -84,7 +84,7 @@
 \end{itemize}
 }
 \frame{
-%\frametitle{動機：分析手法}
+\frametitle{動機：分析手法}
 \begin{figure}
 \begin{tabular}{c}
 \includegraphics[height=0.4\textheight]{img/mosaic_an} \\
@@ -169,6 +169,7 @@ v_{dl} & \sim \normal(v_{dl} | 0,\tau^{-1}) \label{eq_prior1}\\
 v_{dl} & \sim \truncnorm(v_{dl} | 0,\tau^{-1})  \\ \label{eq_prior2}
 & \propto \normal(v_{dl} | 0,\tau^{-1})\one_{(0,\infty)}(v_{dl})
 \end{align*}
+ここで, $\one_{(0,\infty)}(v_{dl})$ は指示関数.
 }
 \frame{
 \frametitle{中間変数}
@@ -228,23 +229,31 @@ h_{dl} &= \sum_n \lambda x_{nd} \prod_{d' \neq d} v_{dl}^{2x_{nd}}. \label{eq_h}
 }
 \frame{
 \frametitle{変分EMアルゴリズム（一般論）}
-global local
+
+\begin{itemize}
+\item[] データ: $\mathcal{D}=(\mathcal{D}_1,\mathcal{D}_2,\ldots,\mathcal{D}_n)$ 
+\item[] $\mathcal{D}$ 全体に影響する \structure{global} な潜在変数: $V$
+\item[] $\mathcal{D}_n$ に影響する \structure{local} な潜在変数: $z_n$
+\end{itemize}
+
 \begin{align*}
 D_{KL}(q\|p) &=\int q(z) \log \frac{q(z)}{p(z_n|\mathcal{D},w)} dz\\
 &= E_q [ \log q(z)] - E_q[\log p(z_n|\mathcal{D},w)]
 \end{align*}
 $q(z) \propto  \exp( E_q[\log p(z_n|\mathcal{D},w)])$ のとき最小.
 
-The estimation procedure can be briefly summarized as follows:
+
+\begin{block}{変分EMアルゴリズム}
 \begin{itemize}
-\item variational E-step: draw $\tilde{z}_n$ for all $n$s using Eq.\ref{qz_rect}--\ref{qz_binary}
-\item variational M-step: update $q(v_{dl})$ using Eq.\ref{qv} and update $q(\lambda)$ using Eq.\ref{qlam}
+\item []\structure{ E-step:}  $q(z) \propto  \exp( E_q[\log p(z_n|\mathcal{D},w)])$ を更新
+\item[] \structure{M-step:}  $q(v_{dl}) \propto  \exp( E_q[\log p(z_n|\mathcal{D},w)])$を更新
 \end{itemize}
+\end{block}
 }
 \frame{
-For \textit{local} latent variable $z_n$, we use Monte-Carlo integral, i.e. sample $\tilde z_n$ using variational posterior as follows
+\structure{local} な潜在変数 $z_n$ に対しては変分事後分布からサンプリング; 特に $\tilde z_n$ と書く
 \begin{itemize}
-\item Rectified
+\item rectified
 \begin{align}
 q(-z_n) = \begin{cases}
     \mathcal{TN}(-z_n|-f_n, \sigma_n^2) & y_n=0,\\
@@ -274,12 +283,12 @@ q(v_{dl})= \begin{cases}
 \truncnorm(\mu_{dl}, \sigma_{dl}) & \mbox{if the prior of $v_{dl}$ is truncated},     
 \end{cases} \label{qv}
 \end{align}
-where $v_{dl}$ and $\sigma_{dl}$ are defined by
+ここで, 
 \begin{align*}
 \mu_{dl} &=\frac{\langle \eta_{dl} \rangle}{\langle h_{dl}\rangle+\tau/\langle\lambda\rangle},\\
 \sigma^2 &=\left(\tau + \langle h_{dl} \rangle \right)^{-1}.
 \end{align*}
-The variational posterior of $\lambda_{m}$ is,  
+$\lambda$ の変分事後分布は,  
 \begin{align}
     q(\lambda) = \gam\left(N/2 \eta_{dl}, \left(h_{dl}+\tau\right)/2\right). \label{qlam}
 \end{align}
