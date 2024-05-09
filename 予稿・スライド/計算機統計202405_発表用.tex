@@ -1,4 +1,4 @@
-\documentclass[dvipdfmx]{beamer}
+\documentclass[dvipdfmx, dvipsnames]{beamer}
 \usetheme[secheader]{Boadilla}
 % \usepackage{beamerthemesplit} // Activate for custom appearanced
 %\setbeamertemplate{caption}[numbered]
@@ -14,10 +14,22 @@
 \renewcommand{\tablename}{Tab}
 \usepackage{tikz}  
 \usetikzlibrary{decorations.pathreplacing,calligraphy}
+\usetikzlibrary{angles,quotes} % for pic
 \setbeamerfont{itemize/enumerate subbody}{size=\normalsize}
+%
 %\setbeamertemplate{itemize subitem}{\normalsize\raise1.25pt\hbox{\donotcoloroutermaths$\blacktriangleright$}}  %to set the symbol size
 \usetikzlibrary{shapes,positioning}
 \usepackage{xcolor}
+\colorlet{veccol}{green!70!black}
+\colorlet{vcol}{green!70!black}
+\colorlet{xcol}{blue!85!black}
+\colorlet{projcol}{xcol!60}
+\colorlet{unitcol}{xcol!60!black!85}
+\colorlet{myblue}{blue!70!black}
+\colorlet{myred}{red!90!black}
+\colorlet{mypurple}{blue!50!red!80!black!80}
+\tikzstyle{vector}=[->,very thick,xcol]
+
 \def\mathunderline#1#2{\color{#1}\underline{{\color{black}#2}}\color{black}}
 
 %def symbol
@@ -50,24 +62,24 @@
 \node[draw, rounded corners, fill=gray!10, right = of rna, xshift = +15pt](protein){\includegraphics[width=.05\textwidth]{img/kagaku_bunshi.png}protein};
 \node[draw, rounded corners, fill=gray!10, right = of protein](phenotype) {\includegraphics[width=.05\textwidth]{img/nut_renzumame.png}phenotype};
 %path
-\path[draw, ->, olive](dna)--(rna) node[midway, below, yshift = -2pt]{転写};
-\path[draw, ->, olive](rna)--(protein) node[midway, below, yshift = -2pt]{翻訳};
-\path[draw, dashed, ->, olive](protein)--(phenotype);
+\path[draw, ->, darkgray](dna)--(rna) node[midway, below, yshift = -2pt]{転写};
+\path[draw, ->,darkgray](rna)--(protein) node[midway, below, yshift = -2pt]{翻訳};
+\path[draw, dashed, ->, darkgray](protein)--(phenotype);
 %omics
 \node[below= of dna](genomics){genomics};
 \node[below= of rna](transcriptomics){transcriptomics};
 \node[below= of protein](proteomics){proteomics};
 
-\node[above= of dna, yshift=-5ex]{\textcolor{gray}{モダリティ}};
+\node[above= of dna, yshift=-5ex]{\textcolor{darkgray}{モダリティ}};
 
-\path[draw, teal](dna)--(genomics);
-\path[draw, teal](rna)--(transcriptomics);
-\path[draw, teal](proteomics)--(protein);
+\path[draw, RoyalBlue](dna)--(genomics);
+\path[draw, RedOrange](rna)--(transcriptomics);
+\path[draw, RedOrange](proteomics)--(protein);
 
-\path[draw, teal, dashed](genomics.north west)--(proteomics.north east);
-\path[draw, teal, dashed](genomics.south west)--(proteomics.south east);
-\path[draw, teal, dashed](genomics.north west)--(genomics.south west);
-\path[draw, teal, dashed](proteomics.north east)--(proteomics.east)node[right](omics){-omics};
+\path[draw, RedOrange, dashed](genomics.north west)--(proteomics.north east);
+\path[draw, RedOrange, dashed](genomics.south west)--(proteomics.south east);
+\path[draw, RedOrange, dashed](genomics.north west)--(genomics.south west);
+\path[draw, RedOrange, dashed](proteomics.north east)--(proteomics.east)node[right](omics){-omics};
 \end{tikzpicture}
 \end{figure}
 \begin{itemize}
@@ -86,12 +98,16 @@
 \frame{
 \frametitle{動機：分析手法}
 \begin{figure}
-\begin{tabular}{c}
-\includegraphics[height=0.4\textheight]{img/mosaic_an} \\
-\includegraphics[height=0.4\textheight]{img/mosaic_mm} \\
- tidy-format の利便性をそのままに行列分解ができないか？
+\begin{tabular}{c|c}
+multi-dimensional array & tidy format\\
+\hline
+\includegraphics[height=0.35\textheight]{img/anndata} & 
+\includegraphics[height=0.35\textheight]{img/ann_tidy}\\
+\includegraphics[height=0.35\textheight]{img/mmdata} &
+\includegraphics[height=0.35\textheight]{img/mm_tidy}
 \end{tabular}
 \end{figure}
+ tidy-format の利便性を生かしたまま行列分解ができないか？
 }
 \frame{
 \frametitle{3階のテンソルの場合}
@@ -121,13 +137,14 @@ v^{(3)}
 \frame{
 \frametitle{内積としての解釈}
 \begin{align*}
-\sum_{l=1}^L \prod_{d=1}^D v_{dl}^{x_{nd}} &= v_{11}^{x_{n1}} v_{21}^{x_{n2}}\cdots  v_{D1}^{x_{nD}}+ \cdots + v_{1L}^{x_{n1}} v_{2L}^{x_{n2}}\cdots  v_{DL}^{x_{nD}}\\
+y_{n}  \approx\sum_{l=1}^L \prod_{d=1}^D v_{dl}^{x_{nd}} &= v_{11}^{x_{n1}} v_{21}^{x_{n2}}\cdots  v_{D1}^{x_{nD}}+ \cdots + v_{1L}^{x_{n1}} v_{2L}^{x_{n2}}\cdots  v_{DL}^{x_{nD}}\\
 &=
  \underbrace{
+ \color{RedOrange}
 \begin{pmatrix}
 v_{d1}^{x_{nd}} &  \ldots  & v_{dL}^{x_{nd}}
  \end{pmatrix} 
- \cdot
+ \color{RoyalBlue}
  \begin{pmatrix}
 \prod _{d' \neq d}v_{d'1}^{x_{nd'}}\\
  \vdots \\
@@ -136,25 +153,48 @@ v_{d1}^{x_{nd}} &  \ldots  & v_{dL}^{x_{nd}}
  }_{\mbox{inner product}}
 \end{align*}
 
+\begin{figure}
+\begin{tabular}{ccc}
+inner product of \Huge $($
+\begin{tikzpicture}
+\draw[thick,->,color=RoyalBlue] (0,0)--(0.71,0.71); 
+  \draw[thick,->,color=RedOrange] (0,0)--(0.51,0.86);
+\end{tikzpicture}
+$)$
+&
+\Large $>$
+&
+inner product of \Huge $($
+\begin{tikzpicture}
+ \draw[thick,->,color=RedOrange] (0,0)--(0.71,0.71);
+  \draw[thick,->,color=RoyalBlue] (0,0)--(0.98,0.2);
+\end{tikzpicture}
+$)$
+\end{tabular}
+\caption{$y_n$の値が大きいとき$V$の$X$ で指定される成分どうしの値が似る}
+\end{figure}
 }
 \frame{
 \frametitle{アンサンブルとしての解釈}
 \begin{align*}
-&\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}} \\
-&=\frac{1}{L}\sum_{l=1}^L   L \underbrace{\exp\left( \sum_{d=1}^D x_{nd}  \cdot \log v_{dl}\right) }_{\mbox{let $f_{nl}$}}\\
-&= \frac{1}{L}\sum_{l=1}^L L f_{nl} \quad \mbox{\structure{(mean of the log-linear predictor)}}
+y_{n}  \approx\ &\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}} =\frac{1}{L}\sum_{l=1}^L   L \underbrace{\exp\left( \sum_{d=1}^D x_{nd}  \cdot \log v_{dl}\right) }_{\mbox{$f_{nl}$}}
+%&= \frac{1}{L}\sum_{l=1}^L L f_{nl} \quad \mbox{\structure{(mean of the log-linear predictor)}}
 \end{align*}
+\begin{figure}
+\includegraphics[height=0.5\textheight]{img/ensemble}
+\caption{x軸: 推定値, y軸: 実測値, 色付きの点: $L f_{nl}$, 黒い点: $\sum_l f_{nl}$}
+\end{figure}
 }
 \frame{
 \frametitle{モデル（準備）}
 
-式1（$y_{n} \approx \sum_{l} \prod_{d=1}^D v_{dl}^{x_{nd}}$）より
+式1$\left( y_{n} \approx \sum_{l} \prod_{d=1}^D v_{dl}^{x_{nd}}\right)$ より
 \begin{align}
 y_n \mid V, \lambda & \sim \normal\left(y_n \mid \sum_{l=1}^L \prod_{d=1}^D v_{dl}^{x_{nd}}, \lambda^{-1}\right) \label{eq_mod1}\\
 v_{dl} & \sim \normal(v_{dl} | 0,\tau^{-1}) \label{eq_prior1}\\
 \lambda & \sim \gam(\lambda | a,b) \nonumber
 \end{align}
-
+ここで $\normal(x|\mu,\sigma^2)$ は正規分布（平均$\mu$,分散$\sigma^2$) $\gam(x | a,b)$ はガンマ分布（形状パラメータ$a$, レートパラメータ$b$）.
 \begin{itemize}
 \item さらに修正・拡張
 \begin{itemize}
@@ -169,10 +209,14 @@ v_{dl} & \sim \normal(v_{dl} | 0,\tau^{-1}) \label{eq_prior1}\\
 v_{dl} & \sim \truncnorm(v_{dl} | 0,\tau^{-1})  \\ \label{eq_prior2}
 & \propto \normal(v_{dl} | 0,\tau^{-1})\one_{(0,\infty)}(v_{dl})
 \end{align*}
-ここで, $\one_{(0,\infty)}(v_{dl})$ は指示関数.
+ここで, $\one_{A}(x)$ は指示関数（$x \in A$ のとき1,さもなくば0）.
+
+\vspace{\baselineskip}
+
+\structure{Note:} 原理的には, 非負制約の有無は変数ごとに選ぶこともできるが, 今回の我々の実装では煩雑さを避けるためすべて非負とした.
 }
 \frame{
-\frametitle{中間変数}
+\frametitle{中間変数：分布を変える}
 \begin{itemize}
 \item $y_n$ が実数（連続値）：
 $$
@@ -204,15 +248,31 @@ $$
 \includegraphics[width=0.3\textwidth]{img/norm_rectified} &
 \includegraphics[width=0.3\textwidth]{img/norm_discretized}
 \end{tabular}
-\caption{左: 潜在変数の事前分布. 右: 観測されるデータのモデル. 一点0で確率を持つ（eg. 重さ, 計数）}
+\caption{左: 潜在変数の事前分布. 右: 観測されるデータのモデル. }
 \end{figure}
+
+観測されるデータのモデルは0の一点で確率を持つ
+
+（cf. zero-inflated モデル）
+
+\vspace{\baselineskip}
+
+\structure{Note:} モデルの密度が0になることは対数尤度に$-\infty$の罰則をつけることと同じであるため, 分布の台が最も大きい影響を持つと考えた.
 }
 \frame{
 \frametitle{モデル}
+
 \begin{equation}
 y_{n} = A_{m(n)}(z_{n}), \quad z_{n} \sim \mathcal{N}\left(\sum_{l=1}^L \prod_{d=1}^Dv_{dl}^{x_{nd}}, \lambda^{-1}\right) \label{eq_mod2}    
 \end{equation}
-ここで $m(n)$ is a function which maps index $n$ to mode $m(n)$. 
+ここで $m(n)$ は $n$ をモダリティを区別する添字に写す関数. 
+
+分析者が設定する要素（チューニングパラメータ）：
+\begin{itemize}
+\item[] 潜在変数$V$の次元$L$
+\item[] 中間的関数$A(x)$
+\item[] 計画行列$X$
+\end{itemize}
 }
 \frame{
 \frametitle{対数尤度}
@@ -225,7 +285,7 @@ y_{n} = A_{m(n)}(z_{n}), \quad z_{n} \sim \mathcal{N}\left(\sum_{l=1}^L \prod_{d
 \eta_{dl} &= \sum_n x_{nd} \prod_{d' \neq d} v_{dl}^{x_{nd}}\left( z_{n} - \sum_{l'\neq l} \prod_{d' \neq d} v_{dl}^{x_{nd}} \right) \label{eq_eta}\\
 h_{dl} &= \sum_n \lambda x_{nd} \prod_{d' \neq d} v_{dl}^{2x_{nd}}. \label{eq_h}
 \end{align}
- $C$ は $v_{dl}$ に依存しない定数.
+ $C$ は $v_{dl}$ に依存しない定数とした.
 }
 \frame{
 \frametitle{変分EMアルゴリズム（一般論）}
@@ -233,7 +293,7 @@ h_{dl} &= \sum_n \lambda x_{nd} \prod_{d' \neq d} v_{dl}^{2x_{nd}}. \label{eq_h}
 \begin{itemize}
 \item[] データ: $\mathcal{D}=(\mathcal{D}_1,\mathcal{D}_2,\ldots,\mathcal{D}_n)$ 
 \item[] $\mathcal{D}$ 全体に影響する \structure{global} な潜在変数: $V$
-\item[] $\mathcal{D}_n$ に影響する \structure{local} な潜在変数: $z_n$
+\item[] $\mathcal{D}_n$ に影響する \structure{local} な潜在変数: $z_n$ ($z=(z_1,\ldots,z_N)'$)
 \end{itemize}
 
 \begin{align*}
@@ -245,13 +305,15 @@ $q(z) \propto  \exp( E_q[\log p(z_n|\mathcal{D},w)])$ のとき最小.
 
 \begin{block}{変分EMアルゴリズム}
 \begin{itemize}
-\item []\structure{ E-step:}  $q(z) \propto  \exp( E_q[\log p(z_n|\mathcal{D},w)])$ を更新
-\item[] \structure{M-step:}  $q(v_{dl}) \propto  \exp( E_q[\log p(z_n|\mathcal{D},w)])$を更新
+\item []\structure{ E-step:}  $q(z_n) \propto  \exp( E_q[\log p(z_n|\mathcal{D},w)])$ を更新
+\item[] \structure{M-step:}  $q(w) \propto  \exp( E_q[\log p(w|\mathcal{D},z)])$を更新
 \end{itemize}
 \end{block}
 }
 \frame{
-\structure{local} な潜在変数 $z_n$ に対しては変分事後分布からサンプリング; 特に $\tilde z_n$ と書く
+\frametitle{提案モデル; local な潜在変数 $z_n$}
+
+変分事後分布からサンプリング：
 \begin{itemize}
 \item rectified
 \begin{align}
@@ -277,6 +339,8 @@ q(-z_n) = \begin{cases}
 \end{itemize}
 }
 \frame{
+\frametitle{提案モデル; globalな潜在変数 $V, \lambda$}
+解析的に期待値計算：
 \begin{align}
 q(v_{dl})= \begin{cases}
 \normal(\mu_{dl}, \sigma_{dl}) & \mbox{if the prior of $v_{dl}$ is not truncated} \\
@@ -285,17 +349,21 @@ q(v_{dl})= \begin{cases}
 \end{align}
 ここで, 
 \begin{align*}
-\mu_{dl} &=\frac{\langle \eta_{dl} \rangle}{\langle h_{dl}\rangle+\tau/\langle\lambda\rangle},\\
-\sigma^2 &=\left(\tau + \langle h_{dl} \rangle \right)^{-1}.
+\mu_{dl} &=\frac{E_q[ \eta_{dl} ]}{E_q[ h_{dl}]+\tau/E_q[\lambda]},\\
+\sigma^2 &=\left(\tau + E_q[ h_{dl} ] \right)^{-1}.
 \end{align*}
 $\lambda$ の変分事後分布は,  
 \begin{align}
-    q(\lambda) = \gam\left(N/2 \eta_{dl}, \left(h_{dl}+\tau\right)/2\right). \label{qlam}
+    q(\lambda) = \gam\left((N/2) E_q[ \eta_{dl}], \left(E_q[ h_{dl}] +\tau\right)/2\right). \label{qlam}
 \end{align}
-
+%ここでは, 乱数でサンプリングする $z_n$ を特に $\tilde z_n$ と書いた.
 }
+
 \frame{
-大規模メタアナリシス(学習済みword2vec のように配布), 
-因果推論（g-formula）, 時空間相関
+\frametitle{まとめ}
+\structure{今後の発展：}大規模メタアナリシス, 
+因果推論, 時空間の相関を考慮する
+%(学習済みword2vec のようなイメージ)
+%（g-formula）
 }
 \end{document} 
