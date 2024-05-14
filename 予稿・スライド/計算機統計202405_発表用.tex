@@ -96,6 +96,47 @@
 \end{itemize}
 }
 \frame{
+\frametitle{動機：データ統合}
+\begin{figure}
+ \begin{tikzpicture}
+\node[draw, fill=gray!10, text height=1.25ex, text width=8.0ex](mouse) at (0,0){   };
+\node[draw, fill=gray!10, right = of mouse, text height=1.25ex, text width=8.0ex](lemur){};
+\node[draw,  right = of lemur, text height=1.25ex, text width=8.0ex, align=center](human){?};
+
+\node[above = of mouse, yshift = -20pt] (labmouse){マウス};
+\node[above = of lemur, yshift = -20pt](lablemur){サル};
+\node[above = of human, yshift = -20pt](labhuman){ヒト};
+
+\path[draw,->, thick](mouse)--(lemur);
+\path[draw,->, thick](lemur)--(human);
+
+\node[left = of mouse, xshift = 20pt] (labA){drug A};
+
+\node[draw, fill=gray!10, text height=1.25ex, text width=8.0ex, below=of mouse](mouse2){   };
+\node[draw, fill=gray!10, right = of mouse2, text height=1.25ex, text width=8.0ex](lemur2){};
+\node[draw,  right = of lemur2, text height=1.25ex, text width=8.0ex, align=center](human2){};
+
+\node[draw, fill=gray!10, text height=1.25ex, text width=8.0ex, below=of mouse2, yshift = 2ex](mouse3){   };
+\node[draw, right = of mouse3, text height=1.25ex, text width=8.0ex](lemur3){};
+\node[draw, fill=gray!10, right = of lemur3, text height=1.25ex, text width=8.0ex, align=center](human3){};
+
+\node[draw,  fill=gray!10, text height=1.25ex, text width=8.0ex, below=of mouse3, yshift = 2ex](mouse4){   };
+\node[draw, fill=gray!10, right = of mouse4, text height=1.25ex, text width=8.0ex](lemur4){};
+\node[draw,  fill=gray!10, right = of lemur4, text height=1.25ex, text width=8.0ex, align=center](human4){};
+
+\node[left = of mouse2, xshift = 20pt] (labA2){drug A};
+\node[left = of mouse3, xshift = 20pt] (labB){drug B};
+\node[left = of mouse4, xshift = 20pt] (labC){drug C};
+
+\path[draw, RoyalBlue](labA2.north west)--(human2.north east);
+\path[draw, RoyalBlue](labA2.north west)--(labC.south west);
+\path[draw, RoyalBlue](human2.north east)--(human4.south east);
+\path[draw, RoyalBlue](labC.south west)--(human4.south east)node[midway, below](int){data integration};
+\end{tikzpicture}
+\caption{データ統合により情報を補完しあう}
+\end{figure}
+}
+\frame{
 \frametitle{動機：分析手法}
 \begin{figure}
 \begin{tabular}{c|c}
@@ -267,6 +308,8 @@ y_{n} = A_{m(n)}(z_{n}), \quad z_{n} \sim \mathcal{N}\left(\sum_{l=1}^L \prod_{d
 \end{equation}
 ここで $m(n)$ は $n$ をモダリティを区別する添字に写す関数. 
 
+\vspace{\baselineskip}
+
 分析者が設定する要素（チューニングパラメータ）：
 \begin{itemize}
 \item[] 潜在変数$V$の次元$L$
@@ -285,7 +328,7 @@ y_{n} = A_{m(n)}(z_{n}), \quad z_{n} \sim \mathcal{N}\left(\sum_{l=1}^L \prod_{d
 \eta_{dl} &= \sum_n x_{nd} \prod_{d' \neq d} v_{dl}^{x_{nd}}\left( z_{n} - \sum_{l'\neq l} \prod_{d' \neq d} v_{dl}^{x_{nd}} \right) \label{eq_eta}\\
 h_{dl} &= \sum_n \lambda x_{nd} \prod_{d' \neq d} v_{dl}^{2x_{nd}}. \label{eq_h}
 \end{align}
- $C$ は $v_{dl}$ に依存しない定数とした.
+$v_{dl}$ に依存しない定数をまとめて $C$ とした.
 }
 \frame{
 \frametitle{変分EMアルゴリズム（一般論）}
@@ -311,7 +354,7 @@ $q(z) \propto  \exp( E_q[\log p(z_n|\mathcal{D},w)])$ のとき最小.
 \end{block}
 }
 \frame{
-\frametitle{提案モデル; local な潜在変数 $z_n$}
+\frametitle{提案モデル; local な潜在変数}
 
 変分事後分布からサンプリング：
 \begin{itemize}
@@ -339,7 +382,7 @@ q(-z_n) = \begin{cases}
 \end{itemize}
 }
 \frame{
-\frametitle{提案モデル; globalな潜在変数 $V, \lambda$}
+\frametitle{提案モデル; globalな潜在変数 }
 解析的に期待値計算：
 \begin{align}
 q(v_{dl})= \begin{cases}
@@ -358,11 +401,16 @@ $\lambda$ の変分事後分布は,
 \end{align}
 %ここでは, 乱数でサンプリングする $z_n$ を特に $\tilde z_n$ と書いた.
 }
-
+\frame{
+\frametitle{データ分析}
+\begin{itemize}
+\item 
+\end{itemize}
+}
 \frame{
 \frametitle{まとめ}
 \structure{今後の発展：}大規模メタアナリシス, 
-因果推論, 時空間の相関を考慮する
+因果推論, 時空間の相関を考慮
 %(学習済みword2vec のようなイメージ)
 %（g-formula）
 }
