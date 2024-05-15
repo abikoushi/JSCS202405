@@ -112,15 +112,15 @@
 
 \node[left = of mouse, xshift = 20pt] (labA){drug A};
 
-\node[draw, fill=gray!10, text height=1.25ex, text width=8.0ex, below=of mouse](mouse2){   };
+\node[draw, fill=gray!10, text height=1.25ex, text width=8.0ex, below=of mouse](mouse2){};
 \node[draw, fill=gray!10, right = of mouse2, text height=1.25ex, text width=8.0ex](lemur2){};
-\node[draw,  right = of lemur2, text height=1.25ex, text width=8.0ex, align=center](human2){};
+\node[draw,  right = of lemur2, text height=1.25ex, text width=8.0ex, align=center](human2){?};
 
-\node[draw, fill=gray!10, text height=1.25ex, text width=8.0ex, below=of mouse2, yshift = 2ex](mouse3){   };
-\node[draw, right = of mouse3, text height=1.25ex, text width=8.0ex](lemur3){};
+\node[draw, fill=gray!10, text height=1.25ex, text width=8.0ex, below=of mouse2, yshift = 2ex](mouse3){};
+\node[draw, right = of mouse3, text height=1.25ex, text width=8.0ex, align=center](lemur3){?};
 \node[draw, fill=gray!10, right = of lemur3, text height=1.25ex, text width=8.0ex, align=center](human3){};
 
-\node[draw,  fill=gray!10, text height=1.25ex, text width=8.0ex, below=of mouse3, yshift = 2ex](mouse4){   };
+\node[draw,  fill=gray!10, text height=1.25ex, text width=8.0ex, below=of mouse3, yshift = 2ex](mouse4){};
 \node[draw, fill=gray!10, right = of mouse4, text height=1.25ex, text width=8.0ex](lemur4){};
 \node[draw,  fill=gray!10, right = of lemur4, text height=1.25ex, text width=8.0ex, align=center](human4){};
 
@@ -128,10 +128,18 @@
 \node[left = of mouse3, xshift = 20pt] (labB){drug B};
 \node[left = of mouse4, xshift = 20pt] (labC){drug C};
 
-\path[draw, RoyalBlue](labA2.north west)--(human2.north east);
-\path[draw, RoyalBlue](labA2.north west)--(labC.south west);
-\path[draw, RoyalBlue](human2.north east)--(human4.south east);
-\path[draw, RoyalBlue](labC.south west)--(human4.south east)node[midway, below](int){data integration};
+\def \intcol {RedOrange};
+\path[draw,  \intcol ](labA2.north west)--(human2.north east);
+\path[draw,  \intcol ](labA2.north west)--(labC.south west);
+\path[draw,  \intcol ](human2.north east)--(human4.south east);
+\path[draw,  \intcol ](labC.south west)--(human4.south east)node[midway, below](int){data integration};
+
+%
+\def \convcol {RoyalBlue};
+\path[draw, \convcol](labA.north west)--(human.north east);
+\path[draw, \convcol](labA.north west)--(labA.south west);
+\path[draw, \convcol](human.north east)--(human.south east);
+\path[draw, \convcol](labA.south west)--(human.south east)node[midway, below](single){conventional method};
 \end{tikzpicture}
 \caption{データ統合により情報を補完しあう}
 \end{figure}
@@ -223,7 +231,7 @@ y_{n}  \approx\ &\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}} =\frac{1}{L}\sum_{l=1
 \end{align*}
 \begin{figure}
 \includegraphics[height=0.5\textheight]{img/ensemble}
-\caption{x軸: 推定値, y軸: 実測値, 色付きの点: $L f_{nl}$, 黒い点: $\sum_l f_{nl}$}
+\caption{x軸: 推定値, y軸: 実測値, 色付きの線: $L f_{nl}$, 黒い線: $\sum_l f_{nl}$}
 \end{figure}
 }
 \frame{
@@ -266,17 +274,17 @@ $$
 \item 
 $y_n$ が非負：
 $$
-A(x)=\begin{cases}x, &x>0\\0 &x\leq 0\end{cases}.
+A(x)=\begin{cases}x, &x>0\\0 &x\leq 0\end{cases}
 $$
 \item
 $y_n$ が2値(0 or 1)：
 $$
-A(x)=\one_{(0,\infty)}(x).
+A(x)=\one_{(0,\infty)}(x)
 $$
 \item
 $y_n$ が非負の整数：
 $$
-A(x)=\begin{cases}\lceil x\rceil, & x>0\\0 &x\leq 0\end{cases}.
+A(x)=\begin{cases}\lceil x\rceil, & x>0\\0 &x\leq 0\end{cases}
 $$
 \end{itemize}
 }
@@ -404,13 +412,28 @@ $\lambda$ の変分事後分布は,
 \frame{
 \frametitle{データ分析}
 \begin{itemize}
-\item 
+\item Kostic et al. (2015): ヒト腸内細菌叢と代謝物（メタボローム）のコホート調査. 糖尿病予備軍の乳幼児に関する.
+\item  GSE146188 : 5種の哺乳類（ヒト, マウス, ブタ, カニクイザル, アカゲザル）の, シングルセル（1細胞ごとの）RNA-seq data.
 \end{itemize}
 }
 \frame{
+\frametitle{Kostic et al. (2015)}
+\begin{figure}
+\begin{tabular}{l}
+\includegraphics[height=0.3\textheight]{img/Kostic_case.pdf} \\
+\includegraphics[height=0.45\textheight]{img/Kostic_name.pdf}
+\end{tabular}
+\caption{component 1 が　case（糖尿病）に相対的に豊富な細菌のグループとわかる }
+\end{figure}
+}
+\frame{
 \frametitle{まとめ}
-\structure{今後の発展：}大規模メタアナリシス, 
-因果推論, 時空間の相関を考慮
+
+CP分解を特殊な場合として含む統計モデルとその変分ベイズ法に基づく推定量を提案した.
+
+解釈性
+
+\structure{今後の発展：}大規模メタアナリシス, 因果推論, 時空間の相関を考慮
 %(学習済みword2vec のようなイメージ)
 %（g-formula）
 }
