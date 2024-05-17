@@ -12,6 +12,7 @@
 \setlength{\parindent}{1em}  %段落字下げ
 \renewcommand{\figurename}{Fig}
 \renewcommand{\tablename}{Tab}
+\usepackage[caption=false]{subfig}
 \usepackage{tikz}  
 \usetikzlibrary{decorations.pathreplacing,calligraphy}
 \usetikzlibrary{angles,quotes} % for pic
@@ -20,15 +21,7 @@
 %\setbeamertemplate{itemize subitem}{\normalsize\raise1.25pt\hbox{\donotcoloroutermaths$\blacktriangleright$}}  %to set the symbol size
 \usetikzlibrary{shapes,positioning}
 \usepackage{xcolor}
-\colorlet{veccol}{green!70!black}
-\colorlet{vcol}{green!70!black}
-\colorlet{xcol}{blue!85!black}
-\colorlet{projcol}{xcol!60}
-\colorlet{unitcol}{xcol!60!black!85}
-\colorlet{myblue}{blue!70!black}
-\colorlet{myred}{red!90!black}
-\colorlet{mypurple}{blue!50!red!80!black!80}
-\tikzstyle{vector}=[->,very thick,xcol]
+
 
 \def\mathunderline#1#2{\color{#1}\underline{{\color{black}#2}}\color{black}}
 
@@ -81,31 +74,27 @@
 \path[draw, RedOrange, dashed](genomics.north west)--(genomics.south west);
 \path[draw, RedOrange, dashed](proteomics.north east)--(proteomics.east)node[right](omics){-omics};
 \end{tikzpicture}
+%\caption{}
 \end{figure}
-\begin{itemize}
-\item オミクス（omics）データを統合して分析したい
+
+オミクス（omics）データを統合して分析したい
+
 \begin{itemize}
 \item[] \structure{積極的理由：}データを補い合い普遍的な特徴を抽出
 \item[] \structure{消極的理由：}対応のあるサンプルなので非独立
 \end{itemize}
-\item 難しさ
-\begin{itemize}
-\item semi-paired なデータが多い
-\item モダリティごとに分布が変わる
-\end{itemize}
-\end{itemize}
 }
 \frame{
-\frametitle{動機：データ統合}
+\frametitle{課題：データ統合}
 \begin{figure}
  \begin{tikzpicture}
 \node[draw, fill=gray!10, text height=1.25ex, text width=8.0ex](mouse) at (0,0){   };
 \node[draw, fill=gray!10, right = of mouse, text height=1.25ex, text width=8.0ex](lemur){};
 \node[draw,  right = of lemur, text height=1.25ex, text width=8.0ex, align=center](human){?};
 
-\node[above = of mouse, yshift = -20pt] (labmouse){マウス};
-\node[above = of lemur, yshift = -20pt](lablemur){サル};
-\node[above = of human, yshift = -20pt](labhuman){ヒト};
+\node[above = of mouse, yshift = -25pt] (labmouse){マウス};
+\node[above = of lemur, yshift = -25pt](lablemur){サル};
+\node[above = of human, yshift = -25pt](labhuman){ヒト};
 
 \path[draw,->, thick](mouse)--(lemur);
 \path[draw,->, thick](lemur)--(human);
@@ -116,11 +105,11 @@
 \node[draw, fill=gray!10, right = of mouse2, text height=1.25ex, text width=8.0ex](lemur2){};
 \node[draw,  right = of lemur2, text height=1.25ex, text width=8.0ex, align=center](human2){?};
 
-\node[draw, fill=gray!10, text height=1.25ex, text width=8.0ex, below=of mouse2, yshift = 2ex](mouse3){};
+\node[draw, fill=gray!10, text height=1.25ex, text width=8.0ex, below=of mouse2, yshift = 3ex](mouse3){};
 \node[draw, right = of mouse3, text height=1.25ex, text width=8.0ex, align=center](lemur3){?};
 \node[draw, fill=gray!10, right = of lemur3, text height=1.25ex, text width=8.0ex, align=center](human3){};
 
-\node[draw,  fill=gray!10, text height=1.25ex, text width=8.0ex, below=of mouse3, yshift = 2ex](mouse4){};
+\node[draw,  fill=gray!10, text height=1.25ex, text width=8.0ex, below=of mouse3, yshift = 3ex](mouse4){};
 \node[draw, fill=gray!10, right = of mouse4, text height=1.25ex, text width=8.0ex](lemur4){};
 \node[draw,  fill=gray!10, right = of lemur4, text height=1.25ex, text width=8.0ex, align=center](human4){};
 
@@ -141,14 +130,21 @@
 \path[draw, \convcol](human.north east)--(human.south east);
 \path[draw, \convcol](labA.south west)--(human.south east)node[midway, below](single){conventional method};
 \end{tikzpicture}
-\caption{データ統合により情報を補完しあう}
+%\caption{データ統合により情報を補完しあう}
 \end{figure}
+
+\setbeamertemplate{itemize item}{\color{orange}$\blacktriangleright$}
+\setbeamertemplate{itemize subitem}{\color{orange}$\blacktriangleright$}
+\begin{itemize}
+\item semi-paired なデータが多い
+\item モダリティごとに分布が変わる
+\end{itemize}
 }
 \frame{
-\frametitle{動機：分析手法}
+%\frametitle{動機：分析手法}
 \begin{figure}
 \begin{tabular}{c|c}
-multi-dimensional array & tidy format\\
+\footnotesize multi-dimensional array & \footnotesize tidy format\\
 \hline
 \includegraphics[height=0.35\textheight]{img/anndata} & 
 \includegraphics[height=0.35\textheight]{img/ann_tidy}\\
@@ -159,10 +155,10 @@ multi-dimensional array & tidy format\\
  tidy-format の利便性を生かしたまま行列分解ができないか？
 }
 \frame{
-\frametitle{3階のテンソルの場合}
+\frametitle{例: 3階のテンソルの場合}
 Data:
 $$
- Y=(y_{ijk}), \quad y=(y_n) = \operatorname{vec}(Y)
+ Y=(y_{ijk}), \quad y=(y_n) = \operatorname{vec}(Y) .
 $$
 
 CP分解：
@@ -170,17 +166,17 @@ CP分解：
 y_{ijk} \approx \sum_{l}v_{il}^{(1)} v_{jl}^{(2)} v_{kl}^{(3)}. 
 \end{equation*}
 
-提案法：
-\begin{equation}
+提案法\footnote{Ko ABE and Teppei SHIMAMURA (2023) UNMF: A unified non-negative matrix factorization for multi-dimensional omics data. Briefings in Bioinformatics. \url{https://github.com/abikoushi/moltenNMF}}：
+\begin{equation*}
 y_{n} \approx \sum_{l}\prod_{d=1}^D v_{dl}^{x_{nd}} \label{eq_approx}
-\end{equation}
+\end{equation*}
 ここで, 
 \begin{align*}
-V=(v_{dl})=\begin{pmatrix}
-v^{(1)}\\
-v^{(2)}\\
-v^{(3)}
-\end{pmatrix}
+V=\begin{pmatrix}
+V^{(1)}\\
+V^{(2)}\\
+V^{(3)} 
+\end{pmatrix}.
 \end{align*}
 }
 \frame{
@@ -226,18 +222,24 @@ $)$
 \frame{
 \frametitle{アンサンブルとしての解釈}
 \begin{align*}
-y_{n}  \approx\ &\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}} =\frac{1}{L}\sum_{l=1}^L   L \underbrace{\exp\left( \sum_{d=1}^D x_{nd}  \cdot \log v_{dl}\right) }_{\mbox{$f_{nl}$}}
+y_{n}  \approx\ &\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}} \\
+&=\frac{1}{L}\sum_{l=1}^L \underbrace{ L\exp\left( \sum_{d=1}^D x_{nd}  \cdot \log v_{dl}\right) }_{\mbox{log-linear model}}
 %&= \frac{1}{L}\sum_{l=1}^L L f_{nl} \quad \mbox{\structure{(mean of the log-linear predictor)}}
 \end{align*}
 \begin{figure}
-\includegraphics[height=0.5\textheight]{img/ensemble}
-\caption{x軸: 推定値, y軸: 実測値, 色付きの線: $L f_{nl}$, 黒い線: $\sum_l f_{nl}$}
+\begin{tikzpicture}
+\draw[thick,->,color=gray] (0,0)--(0.71,0.71); 
+\draw[thick,->,color=gray] (0,0)--(0.51,0.86);
+\draw[thick,->,color=gray](0,0)--(0.98,0.2);
+\draw[thick,->,color=RedOrange](0,0)--(0.73,0.58);
+\end{tikzpicture}
+\caption{複数の対数線形モデルの平均と捉えられる}
 \end{figure}
 }
 \frame{
 \frametitle{モデル（準備）}
 
-式1$\left( y_{n} \approx \sum_{l} \prod_{d=1}^D v_{dl}^{x_{nd}}\right)$ より
+式1$\left( y_{n} \approx \sum_{l} \prod_{d=1}^D v_{dl}^{x_{nd}}\right)$ より\footnote{cf. Abe \& Shimamura (2023) はポアソン分布を仮定.}
 \begin{align}
 y_n \mid V, \lambda & \sim \normal\left(y_n \mid \sum_{l=1}^L \prod_{d=1}^D v_{dl}^{x_{nd}}, \lambda^{-1}\right) \label{eq_mod1}\\
 v_{dl} & \sim \normal(v_{dl} | 0,\tau^{-1}) \label{eq_prior1}\\
@@ -272,41 +274,37 @@ $$
 A(x)=x.
 $$
 \item 
-$y_n$ が非負：
+$y_n$ が非負：非負化
 $$
 A(x)=\begin{cases}x, &x>0\\0 &x\leq 0\end{cases}
 $$
 \item
-$y_n$ が2値(0 or 1)：
+$y_n$ が2値(0 or 1)：2値化
 $$
 A(x)=\one_{(0,\infty)}(x)
 $$
 \item
-$y_n$ が非負の整数：
+$y_n$ が非負の整数：離散化
 $$
 A(x)=\begin{cases}\lceil x\rceil, & x>0\\0 &x\leq 0\end{cases}
 $$
 \end{itemize}
 }
 \frame{
-\frametitle{切断, Rectified, 離散化}
+\frametitle{切断, 非負化, 離散化}
 \begin{figure}
 \centering
 \begin{tabular}{c|cc}
-\includegraphics[width=0.3\textwidth]{img/norm_truncated} &
-\includegraphics[width=0.3\textwidth]{img/norm_rectified} &
-\includegraphics[width=0.3\textwidth]{img/norm_discretized}
+\subfloat[切断]{ \includegraphics[width=0.3\textwidth]{img/norm_truncated}}&
+\subfloat[非負化]{\includegraphics[width=0.3\textwidth]{img/norm_rectified}}&
+\subfloat[離散化]{\includegraphics[width=0.3\textwidth]{img/norm_discretized}}
 \end{tabular}
-\caption{左: 潜在変数の事前分布. 右: 観測されるデータのモデル. }
+\caption{a: 潜在変数の事前分布. b, c: 観測されるデータのモデル. 観測されるデータのモデルは0の一点で確率を持つ（cf. zero-inflated モデル）}
 \end{figure}
 
-観測されるデータのモデルは0の一点で確率を持つ
+%\vspace{\baselineskip}
 
-（cf. zero-inflated モデル）
-
-\vspace{\baselineskip}
-
-\structure{Note:} モデルの密度が0になることは対数尤度に$-\infty$の罰則をつけることと同じであるため, 分布の台が最も大きい影響を持つと考えた.
+\structure{Note:} モデルの密度が0になることは対数尤度に$-\infty$の罰則をつけることと同じであるため, 分布の台が特に大きい影響を持つと考えた.
 }
 \frame{
 \frametitle{モデル}
@@ -362,25 +360,25 @@ $q(z) \propto  \exp( E_q[\log p(z_n|\mathcal{D},w)])$ のとき最小.
 \end{block}
 }
 \frame{
-\frametitle{提案モデル; local な潜在変数}
+\frametitle{local な潜在変数（提案モデル）}
 
 変分事後分布からサンプリング：
 \begin{itemize}
-\item rectified
+\item 非負化：
 \begin{align}
 q(-z_n) = \begin{cases}
     \mathcal{TN}(-z_n|-f_n, \sigma_n^2) & y_n=0,\\
     z_n = y_n \mbox{~with probability 1} & y_n>0
 \end{cases} \label{qz_rect}
 \end{align}
-\item binary
+\item 2値化：
 \begin{align}
 q(-z_n) = \begin{cases}
     \mathcal{TN}(-z_n|-f_n, \sigma_n^2) & y_n=0,\\
     \mathcal{TN}(z_n|f_n, \sigma_n^2) & y_n=1
 \end{cases} \label{qz_binary}
 \end{align}
-\item nonnegative integer
+\item 離散化：
 \begin{align}
 q(-z_n) = \begin{cases}
     \mathcal{TN}(-z_n|-f_n, \sigma_n^2) & y_n=0,\\
@@ -390,7 +388,7 @@ q(-z_n) = \begin{cases}
 \end{itemize}
 }
 \frame{
-\frametitle{提案モデル; globalな潜在変数 }
+\frametitle{globalな潜在変数（提案モデル）}
 解析的に期待値計算：
 \begin{align}
 q(v_{dl})= \begin{cases}
@@ -409,13 +407,20 @@ $\lambda$ の変分事後分布は,
 \end{align}
 %ここでは, 乱数でサンプリングする $z_n$ を特に $\tilde z_n$ と書いた.
 }
-\frame{
+
+\begin{frame}[fragile=singleslide]
 \frametitle{データ分析}
 \begin{itemize}
 \item Kostic et al. (2015): ヒト腸内細菌叢と代謝物（メタボローム）のコホート調査. 糖尿病予備軍の乳幼児に関する.
+\begin{small}
+\begin{verbatim}
+R> ~ subject + colname + age + month + CaseControl + modality
+\end{verbatim}
+\end{small}
 \item  GSE146188 : 5種の哺乳類（ヒト, マウス, ブタ, カニクイザル, アカゲザル）の, シングルセル（1細胞ごとの）RNA-seq data.
 \end{itemize}
-}
+\end{frame}
+
 \frame{
 \frametitle{Kostic et al. (2015)}
 \begin{figure}
@@ -423,15 +428,19 @@ $\lambda$ の変分事後分布は,
 \includegraphics[height=0.3\textheight]{img/Kostic_case.pdf} \\
 \includegraphics[height=0.45\textheight]{img/Kostic_name.pdf}
 \end{tabular}
-\caption{component 1 が　case（糖尿病）に相対的に豊富な細菌のグループとわかる }
+\caption{component 1 が case（糖尿病）に相対的に豊富な細菌のグループ.}
 \end{figure}
 }
 \frame{
 \frametitle{まとめ}
 
-CP分解を特殊な場合として含む統計モデルとその変分ベイズ法に基づく推定量を提案した.
+CP分解を特殊な場合として含む統計モデルと, 変分ベイズ法に基づくその推定量を提案した.
 
-解釈性
+\setbeamertemplate{itemize item}{\color{orange}$\blacktriangleright$}
+\begin{itemize}
+\item 多様なデータに適用できる柔軟性
+\item 解釈性
+\end{itemize}
 
 \structure{今後の発展：}大規模メタアナリシス, 因果推論, 時空間の相関を考慮
 %(学習済みword2vec のようなイメージ)
