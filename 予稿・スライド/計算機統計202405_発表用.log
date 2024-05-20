@@ -1,4 +1,4 @@
-This is e-pTeX, Version 3.14159265-p3.7.1-161114-2.6 (utf8.euc) (TeX Live 2017) (preloaded format=platex 2018.4.2)  17 MAY 2024 19:57
+This is e-pTeX, Version 3.14159265-p3.7.1-161114-2.6 (utf8.euc) (TeX Live 2017) (preloaded format=platex 2018.4.2)  20 MAY 2024 20:30
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1116,85 +1116,81 @@ File: tikzlibrarypositioning.code.tex 2008/10/06 v3.0.1a (rcs-revision 1.7)
 )
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\long' on input line 38.
+(hyperref)                removing `\long' on input line 37.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<def>-command' on input line 38.
+(hyperref)                removing `\<def>-command' on input line 37.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\beamer@todo' on input line 38.
+(hyperref)                removing `\beamer@todo' on input line 37.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<def>-command' on input line 38.
+(hyperref)                removing `\<def>-command' on input line 37.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\beamer@ospec' on input line 38.
+(hyperref)                removing `\beamer@ospec' on input line 37.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\beamer@argscount' on input line 38.
+(hyperref)                removing `\beamer@argscount' on input line 37.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\@ifnextchar' on input line 38.
+(hyperref)                removing `\@ifnextchar' on input line 37.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\long' on input line 38.
+(hyperref)                removing `\long' on input line 37.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<def>-command' on input line 38.
+(hyperref)                removing `\<def>-command' on input line 37.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\beamer@todo' on input line 38.
+(hyperref)                removing `\beamer@todo' on input line 37.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<def>-command' on input line 38.
+(hyperref)                removing `\<def>-command' on input line 37.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\beamer@ospec' on input line 38.
+(hyperref)                removing `\beamer@ospec' on input line 37.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\beamer@argscount' on input line 38.
+(hyperref)                removing `\beamer@argscount' on input line 37.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\@ifnextchar' on input line 38.
+(hyperref)                removing `\@ifnextchar' on input line 37.
 
-(./Ëçê^^88ËÜä^^97ÁΩò^^9fËÖüÊ≤ø®^^88202405_Á^^99ËÇ¥ÔºõÁ^^94®.aux
-
-LaTeX Warning: Label `qz_binary' multiply defined.
-
-) 
+(./Ëçê^^88ËÜä^^97ÁΩò^^9fËÖüÊ≤ø®^^88202405_Á^^99ËÇ¥ÔºõÁ^^94®.aux) 
 \openout1 = `Ëçê^^88ËÜä^^97ÁΩò^^9fËÖüÊ≤ø®^^88202405_Á^^99ËÇ¥ÔºõÁ^^94®.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for JY1/mc/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for JT1/mc/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 40.
-LaTeX Font Info:    ... okay on input line 40.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 39.
+LaTeX Font Info:    ... okay on input line 39.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 39.
+LaTeX Font Info:    ... okay on input line 39.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 39.
+LaTeX Font Info:    ... okay on input line 39.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 39.
+LaTeX Font Info:    ... okay on input line 39.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 39.
+LaTeX Font Info:    ... okay on input line 39.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 39.
+LaTeX Font Info:    ... okay on input line 39.
+LaTeX Font Info:    Checking defaults for JY1/mc/m/n on input line 39.
+LaTeX Font Info:    ... okay on input line 39.
+LaTeX Font Info:    Checking defaults for JT1/mc/m/n on input line 39.
+LaTeX Font Info:    ... okay on input line 39.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 39.
+LaTeX Font Info:    ... okay on input line 39.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: dvips
@@ -1232,7 +1228,7 @@ LaTeX Font Info:    ... okay on input line 40.
 
 ABD: EveryShipout initializing macros
 \AtBeginShipoutBox=\box112
-Package hyperref Info: Link coloring OFF on input line 40.
+Package hyperref Info: Link coloring OFF on input line 39.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
@@ -1242,9 +1238,9 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count289
 )
-LaTeX Info: Redefining \ref on input line 40.
-LaTeX Info: Redefining \pageref on input line 40.
-LaTeX Info: Redefining \nameref on input line 40.
+LaTeX Info: Redefining \ref on input line 39.
+LaTeX Info: Redefining \pageref on input line 39.
+LaTeX Info: Redefining \nameref on input line 39.
  
 (./Ëçê^^88ËÜä^^97ÁΩò^^9fËÖüÊ≤ø®^^88202405_Á^^99ËÇ¥ÔºõÁ^^94®.out) 
 (./Ëçê^^88ËÜä^^97ÁΩò^^9fËÖüÊ≤ø®^^88202405_Á^^99ËÇ¥ÔºõÁ^^94®.out)
@@ -1276,28 +1272,25 @@ Dictionary: translator-numbers-dictionary, Language: English
 r-theorem-dictionary/translator-theorem-dictionary-English.dict
 Dictionary: translator-theorem-dictionary, Language: English 
 )
-LaTeX Info: Redefining \includegraphics on input line 40.
+LaTeX Info: Redefining \includegraphics on input line 39.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: subfig package v1.3 is loaded.
 Package caption Info: End \AtBeginDocument code.
  
 (./Ëçê^^88ËÜä^^97ÁΩò^^9fËÖüÊ≤ø®^^88202405_Á^^99ËÇ¥ÔºõÁ^^94®.nav)
-Overfull \hbox (10.95001pt too wide) in paragraph at lines 40--40
-[][]  
- []
+LaTeX Font Info:    Try loading font information for U+msa on input line 42.
 
-LaTeX Font Info:    Try loading font information for U+msa on input line 43.
 (/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 43.
+LaTeX Font Info:    Try loading font information for U+msb on input line 42.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 
 LaTeX Font Warning: Font shape `OT1/cmss/m/n' in size <4> not available
-(Font)              size <5> substituted on input line 43.
+(Font)              size <5> substituted on input line 42.
 
 [1
 
@@ -1311,7 +1304,7 @@ File: img/kagaku_bunshi.png Graphic file (type bmp)
 File: img/nut_renzumame.png Graphic file (type bmp)
 
 <img/nut_renzumame.png>
-Overfull \hbox (1.43379pt too wide) in paragraph at lines 86--86
+Overfull \hbox (1.43379pt too wide) in paragraph at lines 85--85
  [] 
  []
 
@@ -1323,27 +1316,35 @@ Missing character: There is no ; in font nullfont!
  [3
 
 ]
-File: img/anndata.pdf Graphic file (type pdf)
- <img/anndata.pdf>
-File: img/ann_tidy.pdf Graphic file (type pdf)
- <img/ann_tidy.pdf>
 File: img/mmdata.pdf Graphic file (type pdf)
  <img/mmdata.pdf>
 File: img/mm_tidy.pdf Graphic file (type pdf)
+ <img/mm_tidy.pdf>
+File: img/anndata.pdf Graphic file (type pdf)
+ <img/anndata.pdf>
+File: img/ann_tidy.pdf Graphic file (type pdf)
 
-<img/mm_tidy.pdf> [4
-
-]
-LaTeX Font Info:    Try loading font information for OMS+cmss on input line 181
+<img/ann_tidy.pdf>
+LaTeX Font Info:    Try loading font information for OMS+cmss on input line 155
 .
-LaTeX Font Info:    No file OMScmss.fd. on input line 181.
+LaTeX Font Info:    No file OMScmss.fd. on input line 155.
 
 
 LaTeX Font Warning: Font shape `OMS/cmss/m/n' undefined
 (Font)              using `OMS/cmsy/m/n' instead
-(Font)              for symbol `textasteriskcentered' on input line 181.
+(Font)              for symbol `textasteriskcentered' on input line 155.
 
-[5
+
+LaTeX Font Warning: Font shape `JT1/gt/m/it' undefined
+(Font)              using `JT1/gt/m/n' instead on input line 155.
+
+
+LaTeX Font Warning: Font shape `JY1/gt/m/it' undefined
+(Font)              using `JY1/gt/m/n' instead on input line 155.
+
+[4
+
+] [5
 
 ] [6
 
@@ -1353,8 +1354,6 @@ LaTeX Font Warning: Font shape `OMS/cmss/m/n' undefined
 
 ] [9
 
-] [10
-
 ]
 File: img/norm_truncated.pdf Graphic file (type pdf)
  <img/norm_truncated.pdf>
@@ -1363,11 +1362,13 @@ File: img/norm_rectified.pdf Graphic file (type pdf)
 File: img/norm_discretized.pdf Graphic file (type pdf)
 
 <img/norm_discretized.pdf>
-Overfull \hbox (5.42355pt too wide) in paragraph at lines 308--308
+Overfull \hbox (5.42355pt too wide) in paragraph at lines 301--301
  [][][] 
  []
 
-[11
+[10
+
+] [11
 
 ] [12
 
@@ -1382,16 +1383,32 @@ Overfull \hbox (5.42355pt too wide) in paragraph at lines 308--308
 ] [17
 
 ]
-File: img/Kostic_case.pdf Graphic file (type pdf)
- <img/Kostic_case.pdf>
 File: img/Kostic_name.pdf Graphic file (type pdf)
- <img/Kostic_name.pdf>
-Overfull \vbox (6.23387pt too high) detected at line 433
+ <img/Kostic_name.pdf> [18
+
+]
+File: img/a2m_similar10.pdf Graphic file (type pdf)
+
+<img/a2m_similar10.pdf>
+File: img/myoc_similar10.pdf Graphic file (type pdf)
+ <img/myoc_similar10.pdf>
+Overfull \hbox (10.30525pt too wide) in paragraph at lines 457--457
+ [][][] 
  []
 
-[18
+[19
 
-] [19
+]
+File: img/a2m_similar10.pdf Graphic file (type pdf)
+ <img/a2m_similar10.pdf> [20
+
+]
+File: img/myoc_similar10.pdf Graphic file (type pdf)
+ <img/myoc_similar10.pdf> [21
+
+] [22
+
+] [23
 
 ]
 \tf@nav=\write6
@@ -1403,11 +1420,12 @@ Overfull \vbox (6.23387pt too high) detected at line 433
 \tf@snm=\write8
 \openout8 = `Ëçê^^88ËÜä^^97ÁΩò^^9fËÖüÊ≤ø®^^88202405_Á^^99ËÇ¥ÔºõÁ^^94®.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 449.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 449.
- (./Ëçê^^88ËÜä^^97ÁΩò^^9fËÖüÊ≤ø®^^88202405_Á^^99ËÇ¥ÔºõÁ^^94®.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 449.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 449.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 516.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 516.
+ 
+(./Ëçê^^88ËÜä^^97ÁΩò^^9fËÖüÊ≤ø®^^88202405_Á^^99ËÇ¥ÔºõÁ^^94®.aux)
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 516.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 516.
 Package rerunfilecheck Info: File `Ëçê^^88ËÜä^^97ÁΩò^^9fËÖüÊ≤ø®^^88202405_Á^^99ËÇ¥Ôºõ
 Á^^94®.out' has not changed.
 (rerunfilecheck)             Checksum: 73FE5B30D2389FF6340AB8EF6150B4D1;41.
@@ -1419,18 +1437,15 @@ LaTeX Font Warning: Size substitutions with differences
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-
-LaTeX Warning: There were multiply-defined labels.
-
  ) 
 Here is how much of TeX's memory you used:
- 30617 strings out of 493653
- 640805 string characters out of 6148875
- 732579 words of memory out of 5000000
- 33629 multiletter control sequences out of 15000+600000
- 27731 words of font info for 111 fonts, out of 8000000 for 9000
+ 30645 strings out of 493653
+ 641165 string characters out of 6148875
+ 732614 words of memory out of 5000000
+ 33644 multiletter control sequences out of 15000+600000
+ 31321 words of font info for 123 fonts, out of 8000000 for 9000
  929 hyphenation exceptions out of 8191
- 56i,24n,67p,10436b,847s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 56i,24n,67p,10436b,845s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on Ëçê^^88ËÜä^^97ÁΩò^^9fËÖüÊ≤ø®^^88202405_Á^^99ËÇ¥ÔºõÁ^^94®.dvi (19 pag
-es, 85684 bytes).
+Output written on Ëçê^^88ËÜä^^97ÁΩò^^9fËÖüÊ≤ø®^^88202405_Á^^99ËÇ¥ÔºõÁ^^94®.dvi (23 pag
+es, 100716 bytes).

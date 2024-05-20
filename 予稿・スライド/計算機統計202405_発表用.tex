@@ -9,7 +9,7 @@
 \setbeamertemplate{footline}[frame number] % フッターはスライド番号のみ
 \setbeamercolor{page number in head/foot}{fg=black}
 % \usepackage{beamerthemesplit} // Activate for custom appearance
-\setlength{\parindent}{1em}  %段落字下げ
+%\setlength{\parindent}{1em}  %段落字下げ
 \renewcommand{\figurename}{Fig}
 \renewcommand{\tablename}{Tab}
 \usepackage[caption=false]{subfig}
@@ -21,7 +21,6 @@
 %\setbeamertemplate{itemize subitem}{\normalsize\raise1.25pt\hbox{\donotcoloroutermaths$\blacktriangleright$}}  %to set the symbol size
 \usetikzlibrary{shapes,positioning}
 \usepackage{xcolor}
-
 
 \def\mathunderline#1#2{\color{#1}\underline{{\color{black}#2}}\color{black}}
 
@@ -74,7 +73,7 @@
 \path[draw, RedOrange, dashed](genomics.north west)--(genomics.south west);
 \path[draw, RedOrange, dashed](proteomics.north east)--(proteomics.east)node[right](omics){-omics};
 \end{tikzpicture}
-%\caption{}
+\caption{遺伝子発現の情報の流れ}
 \end{figure}
 
 オミクス（omics）データを統合して分析したい
@@ -146,13 +145,13 @@
 \begin{tabular}{c|c}
 \footnotesize multi-dimensional array & \footnotesize tidy format\\
 \hline
-\includegraphics[height=0.35\textheight]{img/anndata} & 
-\includegraphics[height=0.35\textheight]{img/ann_tidy}\\
 \includegraphics[height=0.35\textheight]{img/mmdata} &
-\includegraphics[height=0.35\textheight]{img/mm_tidy}
+\includegraphics[height=0.35\textheight]{img/mm_tidy} \\
+\includegraphics[height=0.35\textheight]{img/anndata} & 
+\includegraphics[height=0.35\textheight]{img/ann_tidy}
 \end{tabular}
 \end{figure}
- tidy-format の利便性を生かしたまま行列分解ができないか？
+ tidy-format\footnote{Wickham H. (2019).  {\em Advanced R, second edition}. Chapman and Hall/CRC.} の利便性を生かしたまま行列分解ができないか？
 }
 \frame{
 \frametitle{例: 3階のテンソルの場合}
@@ -166,17 +165,13 @@ CP分解：
 y_{ijk} \approx \sum_{l}v_{il}^{(1)} v_{jl}^{(2)} v_{kl}^{(3)}. 
 \end{equation*}
 
-提案法\footnote{Ko ABE and Teppei SHIMAMURA (2023) UNMF: A unified non-negative matrix factorization for multi-dimensional omics data. Briefings in Bioinformatics. \url{https://github.com/abikoushi/moltenNMF}}：
+提案法\footnote{Ko ABE and Teppei SHIMAMURA (2023) UNMF: A unified non-negative matrix factorization for multi-dimensional omics data. Briefings in Bioinformatics. }：
 \begin{equation*}
-y_{n} \approx \sum_{l}\prod_{d=1}^D v_{dl}^{x_{nd}} \label{eq_approx}
+y_{n} \approx \sum_{l}\prod_{d=1}^D v_{dl}^{x_{nd}},
 \end{equation*}
 ここで, 
 \begin{align*}
-V=\begin{pmatrix}
-V^{(1)}\\
-V^{(2)}\\
-V^{(3)} 
-\end{pmatrix}.
+V = (v_{dl}) = \left(V^{(1)} , V^{(2)} , V^{(3)}\right)'.
 \end{align*}
 }
 \frame{
@@ -239,54 +234,52 @@ y_{n}  \approx\ &\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}} \\
 \frame{
 \frametitle{モデル（準備）}
 
-式1$\left( y_{n} \approx \sum_{l} \prod_{d=1}^D v_{dl}^{x_{nd}}\right)$ より\footnote{cf. Abe \& Shimamura (2023) はポアソン分布を仮定.}
-\begin{align}
-y_n \mid V, \lambda & \sim \normal\left(y_n \mid \sum_{l=1}^L \prod_{d=1}^D v_{dl}^{x_{nd}}, \lambda^{-1}\right) \label{eq_mod1}\\
-v_{dl} & \sim \normal(v_{dl} | 0,\tau^{-1}) \label{eq_prior1}\\
-\lambda & \sim \gam(\lambda | a,b) \nonumber
-\end{align}
-ここで $\normal(x|\mu,\sigma^2)$ は正規分布（平均$\mu$,分散$\sigma^2$) $\gam(x | a,b)$ はガンマ分布（形状パラメータ$a$, レートパラメータ$b$）.
-\begin{itemize}
-\item さらに修正・拡張
-\begin{itemize}
-\item 解釈性のため：非負制約 
-\item マルチオミクスデータの分析のため：分布を変える
-\end{itemize}
-\end{itemize}
-}
-\frame{
-\frametitle{事前分布：非負制約}
+$y_{n} \approx \sum_{l} \prod_{d=1}^D v_{dl}^{x_{nd}}$ より\footnote{cf. Abe \& Shimamura (2023) はポアソン分布を仮定.}
 \begin{align*}
-v_{dl} & \sim \truncnorm(v_{dl} | 0,\tau^{-1})  \\ \label{eq_prior2}
-& \propto \normal(v_{dl} | 0,\tau^{-1})\one_{(0,\infty)}(v_{dl})
+y_n \mid V, \lambda & \sim \normal\left(y_n \mid \sum_{l=1}^L \prod_{d=1}^D v_{dl}^{x_{nd}}, \lambda^{-1}\right) \quad  \quad \mbox{\footnotesize 正規分布}\\
+v_{dl} & \sim \truncnorm(v_{dl} | 0,\tau^{-1}) \quad \mbox{\footnotesize 0で左側切断された正規分布}\\% \label{eq_prior1}\\
+\lambda & \sim \gam(\lambda | a,b) \quad \mbox{\footnotesize ガンマ分布}%（shape $=a$, rate $=b$）}%\nonumber
 \end{align*}
-ここで, $\one_{A}(x)$ は指示関数（$x \in A$ のとき1,さもなくば0）.
+%ここで $\normal(x|\mu,\sigma^2)$ は正規分布（平均$\mu$,分散$\sigma^2$),  $\gam(x | a,b)$ はガンマ分布（形状パラメータ$a$, レートパラメータ$b$）.
 
-\vspace{\baselineskip}
-
-\structure{Note:} 原理的には, 非負制約の有無は変数ごとに選ぶこともできるが, 今回の我々の実装では煩雑さを避けるためすべて非負とした.
+\begin{itemize}
+\item[] \structure{さらに}マルチオミクスデータの分析のため：分布を変える
+\end{itemize}
 }
+%\frame{
+%\frametitle{事前分布：非負制約}
+%\begin{align*}
+%v_{dl} & \sim \truncnorm(v_{dl} | 0,\tau^{-1})  \quad \mbox{\footnotesize 切断正規分布}\\
+%& \propto \normal(v_{dl} | 0,\tau^{-1})\one_{(0,\infty)}(v_{dl})
+%\end{align*}
+%ここで, $\one_{A}(x)$ は指示関数（$x \in A$ のとき1,さもなくば0）.
+%
+%\vspace{\baselineskip}
+%
+%\structure{Note:} 原理的には, 非負制約の有無は変数ごとに選ぶこともできるが, 今回は煩雑さを避けるためすべて非負とした.
+%}
 \frame{
 \frametitle{中間変数：分布を変える}
 \begin{itemize}
-\item $y_n$ が実数（連続値）：
+\item $y_n$ が実数（連続値）：恒等変換
 $$
-A(x)=x.
+A(z_n)=z_n.
 $$
 \item 
 $y_n$ が非負：非負化
 $$
-A(x)=\begin{cases}x, &x>0\\0 &x\leq 0\end{cases}
+A(z_n)=\begin{cases}z_n, &z_n>0\\0 &z_n\leq 0\end{cases}
 $$
 \item
 $y_n$ が2値(0 or 1)：2値化
 $$
-A(x)=\one_{(0,\infty)}(x)
+A(z_n)=\one_{(0,\infty)}(z_n)  \quad \mbox{\footnotesize \structure{(indicator function)}}
 $$
 \item
 $y_n$ が非負の整数：離散化
 $$
-A(x)=\begin{cases}\lceil x\rceil, & x>0\\0 &x\leq 0\end{cases}
+A(z_n)=\begin{cases}\lceil z_n\rceil, & z_n>0  \quad \mbox{\footnotesize \structure{(ceiling function)}}
+\\0 &z_n \leq 0\end{cases}
 $$
 \end{itemize}
 }
@@ -304,23 +297,23 @@ $$
 
 %\vspace{\baselineskip}
 
-\structure{Note:} モデルの密度が0になることは対数尤度に$-\infty$の罰則をつけることと同じであるため, 分布の台が特に大きい影響を持つと考えた.
+\structure{Note:} モデルの密度が0になることは対数尤度に$-\infty$の罰則をつけることと同じであるため, 分布の台が特に重要と考えた.
 }
 \frame{
 \frametitle{モデル}
 
-\begin{equation}
-y_{n} = A_{m(n)}(z_{n}), \quad z_{n} \sim \mathcal{N}\left(\sum_{l=1}^L \prod_{d=1}^Dv_{dl}^{x_{nd}}, \lambda^{-1}\right) \label{eq_mod2}    
-\end{equation}
+\begin{equation*}
+y_{n} = A_{m(n)}(z_{n}), \quad z_{n} \sim \mathcal{N}\left(\sum_{l=1}^L \prod_{d=1}^Dv_{dl}^{x_{nd}}, \lambda^{-1}\right)% \label{eq_mod2}    
+\end{equation*}
 ここで $m(n)$ は $n$ をモダリティを区別する添字に写す関数. 
 
 \vspace{\baselineskip}
 
 分析者が設定する要素（チューニングパラメータ）：
 \begin{itemize}
-\item[] 潜在変数$V$の次元$L$
-\item[] 中間的関数$A(x)$
-\item[] 計画行列$X$
+\item 潜在変数$V$の次元$L$
+\item 中間的関数$A(x)$
+\item 計画行列$X$
 \end{itemize}
 }
 \frame{
@@ -330,10 +323,10 @@ y_{n} = A_{m(n)}(z_{n}), \quad z_{n} \sim \mathcal{N}\left(\sum_{l=1}^L \prod_{d
 &= -\frac{h_{dl}}{2}\left(v_{dl}^2-2v_{dl}\frac{\eta_{dl}}{h_{dl}}\right) +C,
 \end{align*}
 ここで,
-\begin{align}
-\eta_{dl} &= \sum_n x_{nd} \prod_{d' \neq d} v_{dl}^{x_{nd}}\left( z_{n} - \sum_{l'\neq l} \prod_{d' \neq d} v_{dl}^{x_{nd}} \right) \label{eq_eta}\\
-h_{dl} &= \sum_n \lambda x_{nd} \prod_{d' \neq d} v_{dl}^{2x_{nd}}. \label{eq_h}
-\end{align}
+\begin{align*}
+\eta_{dl} &= \sum_n x_{nd} \prod_{d' \neq d} v_{dl}^{x_{nd}}\left( z_{n} - \sum_{l'\neq l} \prod_{d' \neq d} v_{dl}^{x_{nd}} \right), \quad \mbox{\footnotesize 1次の項} \\ %\label{eq_eta}\\
+h_{dl} &= \sum_n \lambda x_{nd} \prod_{d' \neq d} v_{dl}^{2x_{nd}}, \quad \mbox{\footnotesize 2次の項}% \label{eq_h}
+\end{align*}
 $v_{dl}$ に依存しない定数をまとめて $C$ とした.
 }
 \frame{
@@ -360,83 +353,154 @@ $q(z) \propto  \exp( E_q[\log p(z_n|\mathcal{D},w)])$ のとき最小.
 \end{block}
 }
 \frame{
-\frametitle{local な潜在変数（提案モデル）}
+\frametitle{local な潜在変数}
 
 変分事後分布からサンプリング：
 \begin{itemize}
 \item 非負化：
-\begin{align}
+\begin{align*}
 q(-z_n) = \begin{cases}
-    \mathcal{TN}(-z_n|-f_n, \sigma_n^2) & y_n=0,\\
+    \mathcal{TN}(-z_n | -\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}}, \sigma_n^2) & y_n=0,\\
     z_n = y_n \mbox{~with probability 1} & y_n>0
-\end{cases} \label{qz_rect}
-\end{align}
+\end{cases}% \label{qz_rect}
+\end{align*}
 \item 2値化：
-\begin{align}
+\begin{align*}
 q(-z_n) = \begin{cases}
-    \mathcal{TN}(-z_n|-f_n, \sigma_n^2) & y_n=0,\\
-    \mathcal{TN}(z_n|f_n, \sigma_n^2) & y_n=1
-\end{cases} \label{qz_binary}
-\end{align}
+    \mathcal{TN}(-z_n|-\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}}, \sigma_n^2) & y_n=0,\\
+    \mathcal{TN}(z_n|\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}}, \sigma_n^2) & y_n=1
+\end{cases} %\label{qz_binary}
+\end{align*}
 \item 離散化：
-\begin{align}
+\begin{align*}
 q(-z_n) = \begin{cases}
-    \mathcal{TN}(-z_n|-f_n, \sigma_n^2) & y_n=0,\\
-    \mathcal{TN}(z_n|f_n, \sigma_n^2) & y_n=1
-\end{cases} \label{qz_binary}
-\end{align}
+    \mathcal{TN}(-z_n | -\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}} , \sigma_n^2) & y_n=0,\\
+    \mathcal{TN}(z_n|\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}}, \sigma_n^2) & y_n=1
+\end{cases}%\label{qz_binary}
+\end{align*}
 \end{itemize}
+
 }
 \frame{
-\frametitle{globalな潜在変数（提案モデル）}
+\frametitle{globalな潜在変数}
 解析的に期待値計算：
-\begin{align}
+\begin{align*}
 q(v_{dl})= \begin{cases}
 \normal(\mu_{dl}, \sigma_{dl}) & \mbox{if the prior of $v_{dl}$ is not truncated} \\
 \truncnorm(\mu_{dl}, \sigma_{dl}) & \mbox{if the prior of $v_{dl}$ is truncated},     
-\end{cases} \label{qv}
-\end{align}
+\end{cases}% \label{qv}
+\end{align*}
 ここで, 
 \begin{align*}
 \mu_{dl} &=\frac{E_q[ \eta_{dl} ]}{E_q[ h_{dl}]+\tau/E_q[\lambda]},\\
 \sigma^2 &=\left(\tau + E_q[ h_{dl} ] \right)^{-1}.
 \end{align*}
 $\lambda$ の変分事後分布は,  
-\begin{align}
-    q(\lambda) = \gam\left((N/2) E_q[ \eta_{dl}], \left(E_q[ h_{dl}] +\tau\right)/2\right). \label{qlam}
-\end{align}
-%ここでは, 乱数でサンプリングする $z_n$ を特に $\tilde z_n$ と書いた.
+\begin{align*}
+ q(\lambda) = \gam\left((N/2) E_q[ \eta_{dl}], \left(E_q[ h_{dl}] +\tau\right)/2\right). \label{qlam}
+\end{align*}
+}
+\frame{
+\frametitle{対数周辺尤度の下限}
+Evidence lower bound (ELBO):  \structure{収束の判定}と\structure{モデル選択}に用いる.
+\begin{align*}
+\mathcal{L}(q) &= E_q\left[\log \frac{p(\boldsymbol{z},V, \lambda|X,\tau, a, b)}{q(V, \lambda)} \right]\nonumber \\
+%& = E_q\left[\log p(\boldsymbol{z} V, \lambda|X,\tau, a, b) - \log q(V, \lambda) \right]\\
+&= \left[\sum_n \left(-  E_q[\lambda] \sum_n \left\{ \tilde{z}_n^2 +\tilde{z}_n  E_q\left[\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}} \right] \right\} + 0.5 E_q[\log \lambda ] \right) \right]\nonumber\\
+& \quad + D_{KL}(q(\lambda)\| p(\lambda)) + \sum_{d,l} D_{KL}(q(v_{dl})\| p(v_{dl})).
+\end{align*}
+ここでは, 乱数でサンプリングする $z_n$ を特に $\tilde z_n$ と書いた.
 }
 
-\begin{frame}[fragile=singleslide]
+\begin{frame}
 \frametitle{データ分析}
 \begin{itemize}
-\item Kostic et al. (2015): ヒト腸内細菌叢と代謝物（メタボローム）のコホート調査. 糖尿病予備軍の乳幼児に関する.
-\begin{small}
-\begin{verbatim}
-R> ~ subject + colname + age + month + CaseControl + modality
-\end{verbatim}
-\end{small}
-\item  GSE146188 : 5種の哺乳類（ヒト, マウス, ブタ, カニクイザル, アカゲザル）の, シングルセル（1細胞ごとの）RNA-seq data.
+\item Kostic et al. (2015): 乳幼児の糖尿病に関するヒト腸内細菌叢と代謝物のコホート調査
+\begin{itemize}
+\item 潜在変数の次元$L=3$
+\item $A(z)$: 離散化, 非負化
+\item $X$: subject, feature, 日齢, 月齢, Case/Control, modality
+\end{itemize}
+\end{itemize}
+
+\begin{itemize}
+\item  GSE146188 : 5種の哺乳類（ヒト, マウス, ブタ, カニクイザル, アカゲザル）の1細胞ごとのRNA-seq データ
+\begin{itemize}
+\item 潜在変数の次元 $L=10$
+\item $A(z)$: 非負化
+\item $X$: cell, gene と種の交互作用, 既知の対応があるヒトの gene
+\end{itemize}
 \end{itemize}
 \end{frame}
 
 \frame{
-\frametitle{Kostic et al. (2015)}
+\frametitle{Kostic et al. (2015); 腸内細菌叢と代謝物}
 \begin{figure}
-\begin{tabular}{l}
-\includegraphics[height=0.3\textheight]{img/Kostic_case.pdf} \\
-\includegraphics[height=0.45\textheight]{img/Kostic_name.pdf}
-\end{tabular}
-\caption{component 1 が case（糖尿病）に相対的に豊富な細菌のグループ.}
+\centering
+\includegraphics[width=0.9\textwidth]{img/Kostic_name.pdf}
+\caption{推定された$V$の各 component に関連する細菌・代謝物. }
 \end{figure}
+
+component 1 が相対的に case (糖尿病) に多い. component 2, 3はそれぞれ Bifidobacterium, Bacteroides が特徴的. 
+}
+
+\frame{
+\frametitle{GSE146188; 5種の哺乳類のRNA-seq }
+
+\begin{figure}
+\begin{tabular}{cc}
+\subfloat[A2Mに近い]{\includegraphics[width=0.48\textwidth]{img/a2m_similar10.pdf}} &
+\subfloat[MYOCに近い]{\includegraphics[width=0.48\textwidth]{img/myoc_similar10.pdf}}
+\end{tabular}
+\caption{推定された$V$を2乗距離で評価}
+\end{figure}
+}
+\frame{
+\frametitle{GSE146188; 5種の哺乳類のRNA-seq}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{figure}
+\subfloat[A2Mに近い]{\includegraphics[width=\textwidth]{img/a2m_similar10.pdf}}
+\end{figure}
+\end{column}
+\begin{column}{0.5\textwidth}
+\footnotesize
+\begin{itemize}
+\item A2M: アルツハイマー病と関連
+\item CKB: 脳内および他の細胞内でホモ二量体として機能
+\item TPM1: 横紋筋および平滑筋の収縮系および非筋肉細胞の細胞骨格に関与する
+\item SPARCL1:解剖学的構造の発達とシナプス組織の調節に関与すると予測される
+\item KLF2: 哺乳類の発生の初期に発現し, 多くの異なる細胞型で見られる
+\end{itemize}
+\end{column}
+\end{columns}
+}
+\frame{
+\frametitle{GSE146188; 5種の哺乳類のRNA-seq}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{figure}
+\subfloat[MYOCに近い]{\includegraphics[width=\textwidth]{img/myoc_similar10.pdf}}
+\end{figure}
+\end{column}
+\begin{column}{0.5\textwidth}
+\footnotesize
+\begin{itemize}
+\item MYOC: 眼圧（緑内障）と関連
+\item CYP1B1: この遺伝子の変異は、原発性先天性緑内障と関連
+\item RAMP2: グリコシル化とアドレノメデュリン受容体の細胞表面への輸送に関与
+\item PTGDS: 平滑筋の収縮/弛緩に関与し, 脳で優先的に発現
+\item ID3: この遺伝子によってコードされるタンパク質は他の HLH タンパク質とヘテロ二量体を形成
+\end{itemize}
+\end{column}
+\end{columns}
 }
 \frame{
 \frametitle{まとめ}
 
 CP分解を特殊な場合として含む統計モデルと, 変分ベイズ法に基づくその推定量を提案した.
 
-\setbeamertemplate{itemize item}{\color{orange}$\blacktriangleright$}
+\setbeamertemplate{itemize item}{\color{orange}$\circ$}
 \begin{itemize}
 \item 多様なデータに適用できる柔軟性
 \item 解釈性
@@ -445,5 +509,8 @@ CP分解を特殊な場合として含む統計モデルと, 変分ベイズ法�
 \structure{今後の発展：}大規模メタアナリシス, 因果推論, 時空間の相関を考慮
 %(学習済みword2vec のようなイメージ)
 %（g-formula）
+}
+\frame{
+\url{https://github.com/abikoushi/moltenNMF}
 }
 \end{document} 
