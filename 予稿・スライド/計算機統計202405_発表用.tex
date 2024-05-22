@@ -3,7 +3,7 @@
 % \usepackage{beamerthemesplit} // Activate for custom appearanced
 %\setbeamertemplate{caption}[numbered]
 \usefonttheme[onlymath]{serif} %数式をゴシックにしない
-\setbeamertemplate{blocks}[rounded] % Blockの影を消す
+%\setbeamertemplate{blocks}[rounded] % Blockの影を消す
 \useinnertheme{circles} % 箇条書きをシンプルに
 \setbeamertemplate{navigation symbols}{} % ナビゲーションシンボルを消す
 \setbeamertemplate{footline}[frame number] % フッターはスライド番号のみ
@@ -24,6 +24,9 @@
 
 \def\mathunderline#1#2{\color{#1}\underline{{\color{black}#2}}\color{black}}
 
+\setbeamercolor{block title}{bg=gray!10}
+\setbeamercolor{block body}{bg=white}
+
 %def symbol
 \newcommand{\normal}{\mathcal{N}}
 \newcommand{\exponential}{\mathcal{E}}
@@ -33,7 +36,7 @@
 \newcommand{\one}{1\!\!1}
 
 \title{テンソル同時分解の拡張による\\オミクスデータの統合}
-\date{2023年6月3日}
+\date{2024年5月25日}
 \author {阿部興\footnote{東京医科歯科大学難治疾患研究所} ・島村徹平\footnote{名古屋大学医学系研究科・東京医科歯科大学難治疾患研究所}}
 
 \begin{document}
@@ -79,8 +82,8 @@
 オミクス（omics）データを統合して分析したい
 
 \begin{itemize}
-\item[] \structure{積極的理由：}データを補い合い普遍的な特徴を抽出
 \item[] \structure{消極的理由：}対応のあるサンプルなので非独立
+\item[] \structure{積極的理由：}データを補い合い普遍的な特徴を抽出
 \end{itemize}
 }
 \frame{
@@ -140,39 +143,64 @@
 \end{itemize}
 }
 \frame{
-%\frametitle{動機：分析手法}
+\frametitle{動機：分析手法}
 \begin{figure}
 \begin{tabular}{c|c}
-\footnotesize multi-dimensional array & \footnotesize tidy format\\
+\footnotesize multi-dimensional array & \footnotesize tidy format\footnotemark[1]\\
 \hline
-\includegraphics[height=0.35\textheight]{img/mmdata} &
-\includegraphics[height=0.35\textheight]{img/mm_tidy} \\
-\includegraphics[height=0.35\textheight]{img/anndata} & 
-\includegraphics[height=0.35\textheight]{img/ann_tidy}
+\includegraphics[height=0.4\textheight]{img/mmdata} &
+\includegraphics[height=0.4\textheight]{img/mm_tidy} \\
 \end{tabular}
+\caption{semi-paired なマルチオミクスデータ}
 \end{figure}
- tidy-format\footnote{Wickham H. (2019).  {\em Advanced R, second edition}. Chapman and Hall/CRC.} の利便性を生かしたまま行列分解ができないか？
+
+tidy format: multi-dimensional array と持つ情報は同じだが欠測や繰り返し測定の扱いに優れる
+
+\footnotetext[1]{Wickham H. (2019).  {\em Advanced R, second edition}. Chapman and Hall/CRC.} 
 }
 \frame{
-\frametitle{例: 3階のテンソルの場合}
-Data:
-$$
- Y=(y_{ijk}), \quad y=(y_n) = \operatorname{vec}(Y) .
-$$
+\frametitle{動機：分析手法}
+\begin{figure}
+\begin{tabular}{c|c}
+\footnotesize multi-dimensional array & \footnotesize tidy format\footnotemark[1]\\
+\hline
+\includegraphics[height=0.4\textheight]{img/anndata} & 
+\includegraphics[height=0.4\textheight]{img/ann_tidy}
+\end{tabular}
+\caption{アノテーションつきのオミクスデータ}
+\end{figure}
 
-CP分解：
-\begin{equation*}
-y_{ijk} \approx \sum_{l}v_{il}^{(1)} v_{jl}^{(2)} v_{kl}^{(3)}. 
-\end{equation*}
+%tidy format: multi-dimensional array と持つ情報は同じだが欠測や繰り返し測定の扱いに優れる
+\setbeamertemplate{itemize item}{\color{RedOrange}$\blacktriangleright$}
+\begin{itemize}
+\item tidy format の利便性を生かしたまま行列分解ができないか？
+\end{itemize}
 
-提案法\footnote{Ko ABE and Teppei SHIMAMURA (2023) UNMF: A unified non-negative matrix factorization for multi-dimensional omics data. Briefings in Bioinformatics. }：
-\begin{equation*}
-y_{n} \approx \sum_{l}\prod_{d=1}^D v_{dl}^{x_{nd}},
-\end{equation*}
-ここで, 
+\footnotetext[1]{Wickham H. (2019).  {\em Advanced R, second edition}. Chapman and Hall/CRC.} 
+}
+\frame{
+\frametitle{モデル（準備）}
+\begin{columns}
+\begin{column}{0.4\textwidth}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{tikzfig/tidy_concept.pdf} 
+\end{figure}
+\end{column}
+\begin{column}{0.6\textwidth}
+観測モデル：正規分布\footnotemark[1]
 \begin{align*}
-V = (v_{dl}) = \left(V^{(1)} , V^{(2)} , V^{(3)}\right)'.
+y_n \mid V, \lambda & \sim \normal\left(y_n \mid \sum_{l=1}^L \prod_{d=1}^D v_{dl}^{x_{nd}}, \lambda^{-1}\right)
 \end{align*}
+
+事前分布：切断正規分布（区間$(0,\infty)$）, ガンマ分布
+\begin{align*}
+v_{dl} & \sim \truncnorm_{(0,\infty)}(v_{dl} | 0,\tau^{-1}) \quad\\
+\lambda & \sim \gam(\lambda | a,b) %（shape $=a$, rate $=b$）}%\nonumber
+\end{align*}
+\end{column}
+\end{columns}
+\footnotetext[1]{Ko ABE and Teppei SHIMAMURA (2023) UNMF: A unified non-negative matrix factorization for multi-dimensional omics data. Briefings in Bioinformatics. ではポアソン分布を使用}
 }
 \frame{
 \frametitle{内積としての解釈}
@@ -231,21 +259,7 @@ y_{n}  \approx\ &\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}} \\
 \caption{複数の対数線形モデルの平均と捉えられる}
 \end{figure}
 }
-\frame{
-\frametitle{モデル（準備）}
 
-$y_{n} \approx \sum_{l} \prod_{d=1}^D v_{dl}^{x_{nd}}$ より\footnote{cf. Abe \& Shimamura (2023) はポアソン分布を仮定.}
-\begin{align*}
-y_n \mid V, \lambda & \sim \normal\left(y_n \mid \sum_{l=1}^L \prod_{d=1}^D v_{dl}^{x_{nd}}, \lambda^{-1}\right) \quad  \quad \mbox{\footnotesize 正規分布}\\
-v_{dl} & \sim \truncnorm(v_{dl} | 0,\tau^{-1}) \quad \mbox{\footnotesize 0で左側切断された正規分布}\\% \label{eq_prior1}\\
-\lambda & \sim \gam(\lambda | a,b) \quad \mbox{\footnotesize ガンマ分布}%（shape $=a$, rate $=b$）}%\nonumber
-\end{align*}
-%ここで $\normal(x|\mu,\sigma^2)$ は正規分布（平均$\mu$,分散$\sigma^2$),  $\gam(x | a,b)$ はガンマ分布（形状パラメータ$a$, レートパラメータ$b$）.
-
-\begin{itemize}
-\item[] \structure{さらに}マルチオミクスデータの分析のため：分布を変える
-\end{itemize}
-}
 %\frame{
 %\frametitle{事前分布：非負制約}
 %\begin{align*}
@@ -300,21 +314,21 @@ $$
 \structure{Note:} モデルの密度が0になることは対数尤度に$-\infty$の罰則をつけることと同じであるため, 分布の台が特に重要と考えた.
 }
 \frame{
-\frametitle{モデル}
+\frametitle{提案モデル}
 
 \begin{equation*}
 y_{n} = A_{m(n)}(z_{n}), \quad z_{n} \sim \mathcal{N}\left(\sum_{l=1}^L \prod_{d=1}^Dv_{dl}^{x_{nd}}, \lambda^{-1}\right)% \label{eq_mod2}    
 \end{equation*}
 ここで $m(n)$ は $n$ をモダリティを区別する添字に写す関数. 
 
-\vspace{\baselineskip}
-
-分析者が設定する要素（チューニングパラメータ）：
+\begin{block}{分析者が設定する要素（チューニングパラメータ）}
 \begin{itemize}
-\item 潜在変数$V$の次元$L$
-\item 中間的関数$A(x)$
-\item 計画行列$X$
+\item[] 潜在変数$V$の次元$L$
+\item[] 中間的関数$A(x)$
+\item[] 計画行列$X$
+\item[] 事前分布のパラメータ $\tau$, $a$, $b$
 \end{itemize}
+\end{block}
 }
 \frame{
 \frametitle{対数尤度}
@@ -357,44 +371,43 @@ $q(z) \propto  \exp( E_q[\log p(z_n|\mathcal{D},w)])$ のとき最小.
 
 変分事後分布からサンプリング：
 \begin{itemize}
-\item 非負化：
+\item 非負化
 \begin{align*}
 q(-z_n) = \begin{cases}
-    \mathcal{TN}(-z_n | -\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}}, \sigma_n^2) & y_n=0,\\
+    \mathcal{TN}_{(0,\infty)}(-z_n | - {\color{gray}\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}}}, \sigma_n^2) & y_n=0,\\
     z_n = y_n \mbox{~with probability 1} & y_n>0
 \end{cases}% \label{qz_rect}
 \end{align*}
-\item 2値化：
+\item 2値化
 \begin{align*}
 q(-z_n) = \begin{cases}
-    \mathcal{TN}(-z_n|-\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}}, \sigma_n^2) & y_n=0,\\
-    \mathcal{TN}(z_n|\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}}, \sigma_n^2) & y_n=1
+    \mathcal{TN}_{(0,\infty)}(-z_n | -  {\color{gray}\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}}}, \sigma_n^2) & y_n=0,\\
+    \mathcal{TN}_{(0,\infty)}(z_n | {\color{gray}\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}}}, \sigma_n^2) & y_n=1
 \end{cases} %\label{qz_binary}
 \end{align*}
-\item 離散化：
+\item 離散化
 \begin{align*}
 q(-z_n) = \begin{cases}
-    \mathcal{TN}(-z_n | -\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}} , \sigma_n^2) & y_n=0,\\
-    \mathcal{TN}(z_n|\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}}, \sigma_n^2) & y_n=1
+    \mathcal{TN}_{(0,\infty)}(-z_n | -  {\color{gray}\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}}}, \sigma_n^2) & y_n=0,\\
+    \mathcal{TN}_{[y_n-1,y_n]}(z_n |  {\color{gray} \sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}}}, \sigma_n^2) & y_n>0
 \end{cases}%\label{qz_binary}
 \end{align*}
 \end{itemize}
-
 }
 \frame{
 \frametitle{globalな潜在変数}
 解析的に期待値計算：
+
+$v_{dl}$ の変分事後分布は,  
 \begin{align*}
-q(v_{dl})= \begin{cases}
-\normal(\mu_{dl}, \sigma_{dl}) & \mbox{if the prior of $v_{dl}$ is not truncated} \\
-\truncnorm(\mu_{dl}, \sigma_{dl}) & \mbox{if the prior of $v_{dl}$ is truncated},     
-\end{cases}% \label{qv}
+q(v_{dl})=\truncnorm(\mu_{dl}, \sigma_{dl}) \quad \mbox{(if the prior of $v_{dl}$ is truncated)}    
 \end{align*}
 ここで, 
 \begin{align*}
 \mu_{dl} &=\frac{E_q[ \eta_{dl} ]}{E_q[ h_{dl}]+\tau/E_q[\lambda]},\\
 \sigma^2 &=\left(\tau + E_q[ h_{dl} ] \right)^{-1}.
 \end{align*}
+
 $\lambda$ の変分事後分布は,  
 \begin{align*}
  q(\lambda) = \gam\left((N/2) E_q[ \eta_{dl}], \left(E_q[ h_{dl}] +\tau\right)/2\right). \label{qlam}
@@ -409,28 +422,71 @@ Evidence lower bound (ELBO):  \structure{収束の判定}と\structure{モデル
 &= \left[\sum_n \left(-  E_q[\lambda] \sum_n \left\{ \tilde{z}_n^2 +\tilde{z}_n  E_q\left[\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}} \right] \right\} + 0.5 E_q[\log \lambda ] \right) \right]\nonumber\\
 & \quad + D_{KL}(q(\lambda)\| p(\lambda)) + \sum_{d,l} D_{KL}(q(v_{dl})\| p(v_{dl})).
 \end{align*}
-ここでは, 乱数でサンプリングする $z_n$ を特に $\tilde z_n$ と書いた.
+ここでは疑似乱数でサンプリングする $z_n$ を特に $\tilde z_n$ と書いた.
 }
 
 \begin{frame}
 \frametitle{データ分析}
 \begin{itemize}
-\item Kostic et al. (2015): 乳幼児の糖尿病に関するヒト腸内細菌叢と代謝物のコホート調査
+\item Kostic \textit{et al.} (2015)\footnote{Kostic AD \textit{et al.} The dynamics of the human infant gut microbiome in development and in progression toward type 1 diabetes. Cell Host Microbe. 2015 11;17(2):260-73.}: 乳幼児の糖尿病に関するヒト腸内細菌叢と代謝物のコホート調査
 \begin{itemize}
-\item 潜在変数の次元$L=3$
+\item 潜在変数の次元$L=3$ (ELBO)
 \item $A(z)$: 離散化, 非負化
 \item $X$: subject, feature, 日齢, 月齢, Case/Control, modality
 \end{itemize}
 \end{itemize}
 
 \begin{itemize}
-\item  GSE146188 : 5種の哺乳類（ヒト, マウス, ブタ, カニクイザル, アカゲザル）の1細胞ごとのRNA-seq データ
+\item van Zyl \textit{et al.}(2020)\footnote{van Zyl T \textit{et al.} Cell atlas of aqueous humor outflow pathways in eyes of humans and four model species provides insight into glaucoma pathogenesis. Proc Natl Acad Sci. 2020. 12;117(19):10339-10349.} : 5種の哺乳類（ヒト, マウス, ブタ, カニクイザル, アカゲザル）の1細胞ごとの遺伝子発現量（RNA-seq）
 \begin{itemize}
-\item 潜在変数の次元 $L=10$
+\item 潜在変数の次元 $L=10$  (ELBO, 10で打ち切り)
 \item $A(z)$: 非負化
-\item $X$: cell, gene と種の交互作用, 既知の対応があるヒトの gene
+\item $X$: cell, gene と種の交互作用, ヒトの gene との既知の対応
 \end{itemize}
 \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{交互作用項について}
+\begin{align*}
+y_n &\approx \sum_{l}\prod_{d=1}^D v_{dl}^{x_{nd}} \\
+&=\begin{cases}
+\sum_l v^{(1)}_{\mathrm{cell},l} v^{(2)}_{\mathrm{\color{RedOrange}{gene}},l} v^{(3)}_{\mathrm{\color{RoyalBlue}{species}},l}  & \mbox{交互作用なし}\\
+\sum_l v^{(1)}_{\mathrm{cell},l} v^{(2)}_{\mathrm{\color{RedOrange}{gene}}, \mathrm{\color{RoyalBlue}{species}},l}v^{(3)}_{\mathrm{\color{RoyalBlue}{species}},l} & \mbox{$\mathrm{gene} \times \mathrm{species}$ の交互作用}
+\end{cases}
+\end{align*}
+gene と種の交互作用は gene についての潜在変数に種ごとの変化を許す
+\end{frame}
+
+\begin{frame}
+\frametitle{ヒトの gene との既知の対応}
+
+van Zyl \textit{et al.}(2020) データの分析では種をまたぐ共通因子として機能
+
+
+\begin{table}
+\caption{マウスとヒトの gene の既知の対応（一部を抜粋）}
+\begin{tabular}{cc}
+\begin{minipage}{0.5\textwidth}
+\footnotesize
+\begin{tabular}{cc}
+mouse & human\\
+\hline
+Khdc1a, Khdc1b, Khdc1c& KHDC1, KHDC1L\\
+Kcnq5& KCNQ5\\
+Gm28237& - \\
+\end{tabular}
+\end{minipage}
+&
+\begin{minipage}{0.5\textwidth}
+\centering
+\includegraphics[width=0.8\textwidth]{img/anndata}  
+\end{minipage}
+\end{tabular}
+\end{table}
+
+
+
 \end{frame}
 
 \frame{
@@ -441,11 +497,11 @@ Evidence lower bound (ELBO):  \structure{収束の判定}と\structure{モデル
 \caption{推定された$V$の各 component に関連する細菌・代謝物. }
 \end{figure}
 
-component 1 が相対的に case (糖尿病) に多い. component 2, 3はそれぞれ Bifidobacterium, Bacteroides が特徴的. 
+component 1 が相対的に case (糖尿病) に多い. component 2, 3はそれぞれ \textit{Bifidobacterium}, \textit{Bacteroides} が特徴的. 
 }
 
 \frame{
-\frametitle{GSE146188; 5種の哺乳類のRNA-seq }
+\frametitle{van Zyl \textit{et al.}(2020); 5種の哺乳類のRNA-seq }
 
 \begin{figure}
 \begin{tabular}{cc}
@@ -456,7 +512,7 @@ component 1 が相対的に case (糖尿病) に多い. component 2, 3はそれ�
 \end{figure}
 }
 \frame{
-\frametitle{GSE146188; 5種の哺乳類のRNA-seq}
+\frametitle{van Zyl \textit{et al.}(2020); A2M}
 \begin{columns}
 \begin{column}{0.5\textwidth}
 \begin{figure}
@@ -466,17 +522,18 @@ component 1 が相対的に case (糖尿病) に多い. component 2, 3はそれ�
 \begin{column}{0.5\textwidth}
 \footnotesize
 \begin{itemize}
-\item A2M: アルツハイマー病と関連
+\item A2M: アルツハイマー病と関連 
 \item CKB: 脳内および他の細胞内でホモ二量体として機能
 \item TPM1: 横紋筋および平滑筋の収縮系および非筋肉細胞の細胞骨格に関与する
 \item SPARCL1:解剖学的構造の発達とシナプス組織の調節に関与すると予測される
-\item KLF2: 哺乳類の発生の初期に発現し, 多くの異なる細胞型で見られる
+\item KLF2: 哺乳類の発生の初期に発現し多くの異なる細胞型で見られる
 \end{itemize}
+\footnotesize{National library of medicine. \url{https://www.ncbi.nlm.nih.gov/gene/} (最終アクセス日2024/5/20)}
 \end{column}
 \end{columns}
 }
 \frame{
-\frametitle{GSE146188; 5種の哺乳類のRNA-seq}
+\frametitle{van Zyl \textit{et al.}(2020); MYOC}
 \begin{columns}
 \begin{column}{0.5\textwidth}
 \begin{figure}
@@ -486,24 +543,25 @@ component 1 が相対的に case (糖尿病) に多い. component 2, 3はそれ�
 \begin{column}{0.5\textwidth}
 \footnotesize
 \begin{itemize}
-\item MYOC: 眼圧（緑内障）と関連
-\item CYP1B1: この遺伝子の変異は、原発性先天性緑内障と関連
+\item MYOC: 眼圧と関連
+\item CYP1B1: この遺伝子の変異は原発性先天性緑内障と関連
 \item RAMP2: グリコシル化とアドレノメデュリン受容体の細胞表面への輸送に関与
-\item PTGDS: 平滑筋の収縮/弛緩に関与し, 脳で優先的に発現
+\item PTGDS: 平滑筋の収縮・弛緩に関与し, 脳で優先的に発現
 \item ID3: この遺伝子によってコードされるタンパク質は他の HLH タンパク質とヘテロ二量体を形成
 \end{itemize}
+\footnotesize{National library of medicine. \url{https://www.ncbi.nlm.nih.gov/gene/} (最終アクセス日2024/5/20)}
 \end{column}
 \end{columns}
 }
 \frame{
 \frametitle{まとめ}
 
-CP分解を特殊な場合として含む統計モデルと, 変分ベイズ法に基づくその推定量を提案した.
+テンソル分解（CP分解）を特殊な場合として含む統計モデルと, 変分ベイズ法に基づくその推定量を提案した.
 
-\setbeamertemplate{itemize item}{\color{orange}$\circ$}
+\setbeamertemplate{itemize item}{\color{RedOrange}\checkmark}
 \begin{itemize}
 \item 多様なデータに適用できる柔軟性
-\item 解釈性
+\item 非負制約による解釈性
 \end{itemize}
 
 \structure{今後の発展：}大規模メタアナリシス, 因果推論, 時空間の相関を考慮
@@ -511,6 +569,51 @@ CP分解を特殊な場合として含む統計モデルと, 変分ベイズ法�
 %（g-formula）
 }
 \frame{
-\url{https://github.com/abikoushi/moltenNMF}
+%\url{https://github.com/abikoushi/moltenNMF}
+}
+\frame{
+\frametitle{例: 3階のテンソルの場合}
+Data:
+$$
+ Y=(y_{ijk}), \quad y=(y_n) = \operatorname{vec}(Y) .
+$$
+
+CP分解：
+\begin{equation*}
+y_{ijk} \approx \sum_{l}v_{il}^{(1)} v_{jl}^{(2)} v_{kl}^{(3)}
+\end{equation*}
+
+UNMF\footnote{Ko ABE and Teppei SHIMAMURA (2023) UNMF: A unified non-negative matrix factorization for multi-dimensional omics data. Briefings in Bioinformatics. }：
+\begin{equation*}
+y_{n} \approx \sum_{l}\prod_{d=1}^D v_{dl}^{x_{nd}},  \quad x_{nd} \in \{0,1\}
+\end{equation*}
+ここで, 
+\begin{align*}
+V = (v_{dl}) = \left(V^{(1)} , V^{(2)} , V^{(3)}\right)'.
+\end{align*}
+}
+\frame{
+\frametitle{シミュレーション; 設定}
+
+サンプル：
+$$
+y_{ij} \sim \mathrm{Poisson}\left(\sum_{l} w_{il}h_l{lj} \right), \quad  (i=1,\ldots,500, j=1,\ldots, 1000)
+$$
+
+
+行方向の傾向$W$と列方向の傾向$H$をそれぞれ基底関数（$\sin(x)$, $\cos(x)$, $\mathrm{sign}(x)$, $\tanh(x)$）の一次結合で設定.
+
+\begin{figure}
+\includegraphics[width=0.4\textwidth]{img/groundtruth.pdf}
+\caption{本シミュレーションで設定した真値}
+\end{figure}
+}
+\frame{
+\begin{figure}
+\begin{tabular}{cc}
+\subfloat[$L=3$]{\includegraphics[width=0.48\textwidth]{img/multi_3to3.pdf}} &
+\subfloat[$L=4$]{\includegraphics[width=0.48\textwidth]{img/multi_3to4.pdf}}
+\end{tabular}
+\end{figure}
 }
 \end{document} 
