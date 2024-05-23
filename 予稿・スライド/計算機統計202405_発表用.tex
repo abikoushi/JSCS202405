@@ -13,10 +13,11 @@
 \renewcommand{\figurename}{Fig}
 \renewcommand{\tablename}{Tab}
 \usepackage[caption=false]{subfig}
-\usepackage{tikz}  
+%\usepackage{blindtext}
+\usepackage{tikz}
 \usetikzlibrary{decorations.pathreplacing,calligraphy}
 \usetikzlibrary{angles,quotes} % for pic
-\setbeamerfont{itemize/enumerate subbody}{size=\normalsize}
+%\setbeamerfont{itemize/enumerate subbody}{size=\normalsize} %subitem を同じ大きさに
 %
 %\setbeamertemplate{itemize subitem}{\normalsize\raise1.25pt\hbox{\donotcoloroutermaths$\blacktriangleright$}}  %to set the symbol size
 \usetikzlibrary{shapes,positioning}
@@ -24,8 +25,8 @@
 
 \def\mathunderline#1#2{\color{#1}\underline{{\color{black}#2}}\color{black}}
 
-\setbeamercolor{block title}{bg=gray!10}
-\setbeamercolor{block body}{bg=white}
+\setbeamercolor{block title}{bg=gray!10} %block title の背景
+\setbeamercolor{block body}{bg=white} %block の中身
 
 %def symbol
 \newcommand{\normal}{\mathcal{N}}
@@ -34,6 +35,12 @@
 \newcommand{\gam}{\mathcal{G}}
 \newcommand{\C}{C}
 \newcommand{\one}{1\!\!1}
+
+%list を black-right-triangle にするコマンド
+\newcommand{\triangleitem}{
+\setbeamertemplate{itemize item}{\color{RedOrange}$\blacktriangleright$}
+\setbeamertemplate{itemize subitem}{\color{RedOrange}$\blacktriangleright$}
+}
 
 \title{テンソル同時分解の拡張による\\オミクスデータの統合}
 \date{2024年5月25日}
@@ -79,31 +86,31 @@
 \caption{遺伝子発現の情報の流れ}
 \end{figure}
 
-オミクス（omics）データを統合して分析したい
+モダリティ（計測対象）が違っても普遍的な現象があるはず
 
+\triangleitem
 \begin{itemize}
-\item[] \structure{消極的理由：}対応のあるサンプルなので非独立
-\item[] \structure{積極的理由：}データを補い合い普遍的な特徴を抽出
+\item オミクス（omics）データを統合して分析したい
 \end{itemize}
 }
 \frame{
-\frametitle{課題：データ統合}
+\frametitle{データ統合}
 \begin{figure}
  \begin{tikzpicture}
 \node[draw, fill=gray!10, text height=1.25ex, text width=8.0ex](mouse) at (0,0){   };
 \node[draw, fill=gray!10, right = of mouse, text height=1.25ex, text width=8.0ex](lemur){};
 \node[draw,  right = of lemur, text height=1.25ex, text width=8.0ex, align=center](human){?};
 
-\node[above = of mouse, yshift = -25pt] (labmouse){マウス};
-\node[above = of lemur, yshift = -25pt](lablemur){サル};
-\node[above = of human, yshift = -25pt](labhuman){ヒト};
+\node[above = of mouse, yshift = -25pt] (labmouse){mouse};
+\node[above = of lemur, yshift = -25pt](lablemur){macaque};
+\node[above = of human, yshift = -25pt](labhuman){human};
 
 \path[draw,->, thick](mouse)--(lemur);
 \path[draw,->, thick](lemur)--(human);
 
 \node[left = of mouse, xshift = 20pt] (labA){drug A};
 
-\node[draw, fill=gray!10, text height=1.25ex, text width=8.0ex, below=of mouse](mouse2){};
+\node[draw, fill=gray!10, text height=1.25ex, text width=8.0ex, below=of mouse, yshift = 1ex](mouse2){};
 \node[draw, fill=gray!10, right = of mouse2, text height=1.25ex, text width=8.0ex](lemur2){};
 \node[draw,  right = of lemur2, text height=1.25ex, text width=8.0ex, align=center](human2){?};
 
@@ -135,8 +142,12 @@
 %\caption{データ統合により情報を補完しあう}
 \end{figure}
 
-\setbeamertemplate{itemize item}{\color{orange}$\blacktriangleright$}
-\setbeamertemplate{itemize subitem}{\color{orange}$\blacktriangleright$}
+\begin{description}
+\item[積極的動機] データを補い合い普遍的な特徴を抽出
+\item[消極的動機] 対応のあるサンプルなので非独立
+\end{description}
+
+\triangleitem
 \begin{itemize}
 \item semi-paired なデータが多い
 \item モダリティごとに分布が変わる
@@ -151,10 +162,10 @@
 \includegraphics[height=0.4\textheight]{img/mmdata} &
 \includegraphics[height=0.4\textheight]{img/mm_tidy} \\
 \end{tabular}
-\caption{semi-paired なマルチオミクスデータ}
+\caption{semi-paired なマルチオミクスデータ. 左右で持つ情報は同じ.}
 \end{figure}
 
-tidy format: multi-dimensional array と持つ情報は同じだが欠測や繰り返し測定の扱いに優れる
+tidy format は欠測や反復測定の扱いに優れる
 
 \footnotetext[1]{Wickham H. (2019).  {\em Advanced R, second edition}. Chapman and Hall/CRC.} 
 }
@@ -167,7 +178,7 @@ tidy format: multi-dimensional array と持つ情報は同じだが欠測や繰�
 \includegraphics[height=0.4\textheight]{img/anndata} & 
 \includegraphics[height=0.4\textheight]{img/ann_tidy}
 \end{tabular}
-\caption{アノテーションつきのオミクスデータ}
+\caption{アノテーションつきのオミクスデータ. 左右で持つ情報は同じ.}
 \end{figure}
 
 %tidy format: multi-dimensional array と持つ情報は同じだが欠測や繰り返し測定の扱いに優れる
@@ -179,7 +190,7 @@ tidy format: multi-dimensional array と持つ情報は同じだが欠測や繰�
 \footnotetext[1]{Wickham H. (2019).  {\em Advanced R, second edition}. Chapman and Hall/CRC.} 
 }
 \frame{
-\frametitle{モデル（準備）}
+\frametitle{提案モデル（準備）}
 \begin{columns}
 \begin{column}{0.4\textwidth}
 \begin{figure}
@@ -193,15 +204,16 @@ tidy format: multi-dimensional array と持つ情報は同じだが欠測や繰�
 y_n \mid V, \lambda & \sim \normal\left(y_n \mid \sum_{l=1}^L \prod_{d=1}^D v_{dl}^{x_{nd}}, \lambda^{-1}\right)
 \end{align*}
 
-事前分布：切断正規分布（区間$(0,\infty)$）, ガンマ分布
+事前分布：区間 $(0,\infty)$ に切断された正規分布, ガンマ分布
 \begin{align*}
 v_{dl} & \sim \truncnorm_{(0,\infty)}(v_{dl} | 0,\tau^{-1}) \quad\\
 \lambda & \sim \gam(\lambda | a,b) %（shape $=a$, rate $=b$）}%\nonumber
 \end{align*}
 \end{column}
 \end{columns}
-\footnotetext[1]{Ko ABE and Teppei SHIMAMURA (2023) UNMF: A unified non-negative matrix factorization for multi-dimensional omics data. Briefings in Bioinformatics. ではポアソン分布を使用}
+\footnotetext[1]{cf. Abe \& Shimamura (2023). UNMF: A unified non-negative matrix factorization for multi-dimensional omics data. \textit{Briefings in Bioinformatics.}  ではポアソン分布を仮定}
 }
+
 \frame{
 \frametitle{内積としての解釈}
 \begin{align*}
@@ -374,22 +386,22 @@ $q(z) \propto  \exp( E_q[\log p(z_n|\mathcal{D},w)])$ のとき最小.
 \item 非負化
 \begin{align*}
 q(-z_n) = \begin{cases}
-    \mathcal{TN}_{(0,\infty)}(-z_n | - {\color{gray}\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}}}, \sigma_n^2) & y_n=0,\\
+    \mathcal{TN}_{(0,\infty)}(-z_n | - {\color{RoyalBlue}\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}}}, \sigma_n^2) & y_n=0,\\
     z_n = y_n \mbox{~with probability 1} & y_n>0
 \end{cases}% \label{qz_rect}
 \end{align*}
 \item 2値化
 \begin{align*}
 q(-z_n) = \begin{cases}
-    \mathcal{TN}_{(0,\infty)}(-z_n | -  {\color{gray}\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}}}, \sigma_n^2) & y_n=0,\\
-    \mathcal{TN}_{(0,\infty)}(z_n | {\color{gray}\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}}}, \sigma_n^2) & y_n=1
+    \mathcal{TN}_{(0,\infty)}(-z_n | -  {\color{RoyalBlue}\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}}}, \sigma_n^2) & y_n=0,\\
+    \mathcal{TN}_{(0,\infty)}(z_n | {\color{RoyalBlue}\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}}}, \sigma_n^2) & y_n=1
 \end{cases} %\label{qz_binary}
 \end{align*}
 \item 離散化
 \begin{align*}
 q(-z_n) = \begin{cases}
-    \mathcal{TN}_{(0,\infty)}(-z_n | -  {\color{gray}\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}}}, \sigma_n^2) & y_n=0,\\
-    \mathcal{TN}_{[y_n-1,y_n]}(z_n |  {\color{gray} \sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}}}, \sigma_n^2) & y_n>0
+    \mathcal{TN}_{(0,\infty)}(-z_n | -  {\color{RoyalBlue}\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}}}, \sigma_n^2) & y_n=0,\\
+    \mathcal{TN}_{[y_n-1,y_n]}(z_n |  {\color{RoyalBlue} \sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}}}, \sigma_n^2) & y_n>0
 \end{cases}%\label{qz_binary}
 \end{align*}
 \end{itemize}
@@ -426,46 +438,67 @@ Evidence lower bound (ELBO):  \structure{収束の判定}と\structure{モデル
 }
 
 \begin{frame}
-\frametitle{データ分析}
+\frametitle{データ分析事例}
 \begin{itemize}
-\item Kostic \textit{et al.} (2015)\footnote{Kostic AD \textit{et al.} The dynamics of the human infant gut microbiome in development and in progression toward type 1 diabetes. Cell Host Microbe. 2015 11;17(2):260-73.}: 乳幼児の糖尿病に関するヒト腸内細菌叢と代謝物のコホート調査
+\item Kostic \textit{et al.} (2015)\footnote{The dynamics of the human infant gut microbiome in development and in progression toward type 1 diabetes. Cell Host Microbe. 2015 11;17(2):260-73.}: 乳幼児の糖尿病に関する腸内細菌叢と代謝物のコホート調査
 \begin{itemize}
+\item 被験者33人, 代謝物5種, 細菌86種
 \item 潜在変数の次元$L=3$ (ELBO)
 \item $A(z)$: 離散化, 非負化
 \item $X$: subject, feature, 日齢, 月齢, Case/Control, modality
 \end{itemize}
-\end{itemize}
-
+\item van Zyl \textit{et al.}(2020)\footnote{Cell atlas of aqueous humor outflow pathways in eyes of humans and four model species provides insight into glaucoma pathogenesis. Proc Natl Acad Sci. 2020. 12;117(19):10339-10349.} : 5種の哺乳類（ヒト, マウス, ブタ, カニクイザル, アカゲザル）の1細胞ごとの遺伝子発現量（RNA-seq）
 \begin{itemize}
-\item van Zyl \textit{et al.}(2020)\footnote{van Zyl T \textit{et al.} Cell atlas of aqueous humor outflow pathways in eyes of humans and four model species provides insight into glaucoma pathogenesis. Proc Natl Acad Sci. 2020. 12;117(19):10339-10349.} : 5種の哺乳類（ヒト, マウス, ブタ, カニクイザル, アカゲザル）の1細胞ごとの遺伝子発現量（RNA-seq）
-\begin{itemize}
-\item 潜在変数の次元 $L=10$  (ELBO, 10で打ち切り)
+\item 50112細胞, 2000$\times$5 遺伝子（分散の大きいもの）
+\item 潜在変数の次元 $L=10$  (ELBO, 10で打ち切り）
 \item $A(z)$: 非負化
-\item $X$: cell, gene と種の交互作用, ヒトの gene との既知の対応
+\item $X$: 細胞, 遺伝子と種の交互作用, ヒトの遺伝子との既知の対応
 \end{itemize}
 \end{itemize}
 \end{frame}
+
+\frame{
+\frametitle{Kostic et al. (2015); 腸内細菌叢と代謝物}
+\begin{figure}
+\centering
+\includegraphics[width=0.9\textwidth]{img/Kostic_name.pdf}
+\caption{推定された$V$の各 component に関連する細菌・代謝物. }
+\end{figure}
+
+component 1 が相対的に case (糖尿病) に多い. component 2, 3はそれぞれ \textit{Bifidobacterium}, \textit{Bacteroides} が特徴的. 
+}
+
 
 \begin{frame}
 \frametitle{交互作用項について}
+
 \begin{align*}
-y_n &\approx \sum_{l}\prod_{d=1}^D v_{dl}^{x_{nd}} \\
-&=\begin{cases}
-\sum_l v^{(1)}_{\mathrm{cell},l} v^{(2)}_{\mathrm{\color{RedOrange}{gene}},l} v^{(3)}_{\mathrm{\color{RoyalBlue}{species}},l}  & \mbox{交互作用なし}\\
-\sum_l v^{(1)}_{\mathrm{cell},l} v^{(2)}_{\mathrm{\color{RedOrange}{gene}}, \mathrm{\color{RoyalBlue}{species}},l}v^{(3)}_{\mathrm{\color{RoyalBlue}{species}},l} & \mbox{$\mathrm{gene} \times \mathrm{species}$ の交互作用}
-\end{cases}
+f_n =  \sum_{l}\prod_{d=1}^D v_{dl}^{x_{nd}} 
 \end{align*}
-gene と種の交互作用は gene についての潜在変数に種ごとの変化を許す
+と置く. $\circ$ をアダマール積（要素ごとの積）として,
+\begin{block}{疑似コード}
+\begin{itemize}
+%\begin{flushleft}
+\item[] $X$に交互作用なし:
+$$
+f[n] = \operatorname{sum}( v^{(1)}[\mathrm{cell}[n],:] \circ v^{(2)}[\mathrm{\color{RedOrange}{gene}}[n],:]  \circ  v^{(3)}[\mathrm{\color{RoyalBlue}{species}}[n],:] )
+$$
+\item[] $X$に{\color{RedOrange}{gene} } $\times$ {\color{RoyalBlue}{species} }の交互作用:
+$$
+f[n] = \operatorname{sum}(  v^{(1)}[{\mathrm{cell}}[n],:] \circ v^{(2)}[\mathrm{\color{RedOrange}{gene}}[n], \mathrm{\color{RoyalBlue}{species}}[n],:] )
+$$
+\end{itemize}
+\end{block}
+
+遺伝子と種の交互作用は遺伝子についての潜在変数に種ごとの変化を許す
 \end{frame}
 
 \begin{frame}
-\frametitle{ヒトの gene との既知の対応}
+\frametitle{ヒトの遺伝子との既知の対応}
 
 van Zyl \textit{et al.}(2020) データの分析では種をまたぐ共通因子として機能
 
-
-\begin{table}
-\caption{マウスとヒトの gene の既知の対応（一部を抜粋）}
+\begin{figure}
 \begin{tabular}{cc}
 \begin{minipage}{0.5\textwidth}
 \footnotesize
@@ -483,22 +516,10 @@ Gm28237& - \\
 \includegraphics[width=0.8\textwidth]{img/anndata}  
 \end{minipage}
 \end{tabular}
-\end{table}
-
-
-
+\caption{マウスとヒトの遺伝子の既知の対応（一部を抜粋）}
+\end{figure}
 \end{frame}
 
-\frame{
-\frametitle{Kostic et al. (2015); 腸内細菌叢と代謝物}
-\begin{figure}
-\centering
-\includegraphics[width=0.9\textwidth]{img/Kostic_name.pdf}
-\caption{推定された$V$の各 component に関連する細菌・代謝物. }
-\end{figure}
-
-component 1 が相対的に case (糖尿病) に多い. component 2, 3はそれぞれ \textit{Bifidobacterium}, \textit{Bacteroides} が特徴的. 
-}
 
 \frame{
 \frametitle{van Zyl \textit{et al.}(2020); 5種の哺乳類のRNA-seq }
@@ -556,7 +577,7 @@ component 1 が相対的に case (糖尿病) に多い. component 2, 3はそれ�
 \frame{
 \frametitle{まとめ}
 
-テンソル分解（CP分解）を特殊な場合として含む統計モデルと, 変分ベイズ法に基づくその推定量を提案した.
+テンソル分解（CP分解）を特殊な場合として含むモデルと, 変分ベイズ法に基づくその推定量を提案した.
 
 \setbeamertemplate{itemize item}{\color{RedOrange}\checkmark}
 \begin{itemize}
@@ -568,10 +589,12 @@ component 1 が相対的に case (糖尿病) に多い. component 2, 3はそれ�
 %(学習済みword2vec のようなイメージ)
 %（g-formula）
 }
-\frame{
+\appendix
+\begin{frame}[noframenumbering]
 %\url{https://github.com/abikoushi/moltenNMF}
-}
-\frame{
+\end{frame}
+
+\begin{frame}[noframenumbering]
 \frametitle{例: 3階のテンソルの場合}
 Data:
 $$
@@ -591,8 +614,9 @@ y_{n} \approx \sum_{l}\prod_{d=1}^D v_{dl}^{x_{nd}},  \quad x_{nd} \in \{0,1\}
 \begin{align*}
 V = (v_{dl}) = \left(V^{(1)} , V^{(2)} , V^{(3)}\right)'.
 \end{align*}
-}
-\frame{
+\end{frame}
+
+\begin{frame}[noframenumbering]
 \frametitle{シミュレーション; 設定}
 
 サンプル：
@@ -600,20 +624,24 @@ $$
 y_{ij} \sim \mathrm{Poisson}\left(\sum_{l} w_{il}h_l{lj} \right), \quad  (i=1,\ldots,500, j=1,\ldots, 1000)
 $$
 
-
 行方向の傾向$W$と列方向の傾向$H$をそれぞれ基底関数（$\sin(x)$, $\cos(x)$, $\mathrm{sign}(x)$, $\tanh(x)$）の一次結合で設定.
 
 \begin{figure}
 \includegraphics[width=0.4\textwidth]{img/groundtruth.pdf}
 \caption{本シミュレーションで設定した真値}
 \end{figure}
-}
-\frame{
+\end{frame}
+
+\begin{frame}[noframenumbering]
 \begin{figure}
 \begin{tabular}{cc}
 \subfloat[$L=3$]{\includegraphics[width=0.48\textwidth]{img/multi_3to3.pdf}} &
 \subfloat[$L=4$]{\includegraphics[width=0.48\textwidth]{img/multi_3to4.pdf}}
 \end{tabular}
 \end{figure}
-}
+\end{frame}
+
+\begin{frame}[noframenumbering]
+\url{https://github.com/abikoushi/moltenNMF}
+\end{frame}
 \end{document} 
