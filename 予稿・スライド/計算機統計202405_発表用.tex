@@ -17,7 +17,7 @@
 \usepackage{tikz}
 \usetikzlibrary{decorations.pathreplacing,calligraphy}
 \usetikzlibrary{angles,quotes} % for pic
-%\setbeamerfont{itemize/enumerate subbody}{size=\normalsize} %subitem を同じ大きさに
+\setbeamerfont{itemize/enumerate subbody}{size=\normalsize} %subitem を同じ大きさに
 %
 %\setbeamertemplate{itemize subitem}{\normalsize\raise1.25pt\hbox{\donotcoloroutermaths$\blacktriangleright$}}  %to set the symbol size
 \usetikzlibrary{shapes,positioning}
@@ -54,7 +54,7 @@
 \renewcommand*{\thefootnote}{\fnsymbol{footnote}}
 \setcounter{footnote}{0} 
 
-\section{背景}
+\section{background}
 \frame{
 \frametitle{動機：分析対象}
 \begin{figure}
@@ -74,7 +74,7 @@
 
 \node[above= of dna, yshift=-5ex]{\textcolor{darkgray}{モダリティ}};
 
-\path[draw, RoyalBlue](dna)--(genomics);
+\path[draw, RedOrange](dna)--(genomics);
 \path[draw, RedOrange](rna)--(transcriptomics);
 \path[draw, RedOrange](proteomics)--(protein);
 
@@ -86,7 +86,7 @@
 \caption{遺伝子発現の情報の流れ}
 \end{figure}
 
-モダリティ（計測対象）が違っても普遍的な現象があるはず
+モダリティ（計測対象）の背後に普遍的な現象があるはず
 
 \triangleitem
 \begin{itemize}
@@ -167,28 +167,15 @@
 
 tidy format は欠測や反復測定の扱いに優れる
 
-\footnotetext[1]{Wickham H. (2019).  {\em Advanced R, second edition}. Chapman and Hall/CRC.} 
-}
-\frame{
-\frametitle{動機：分析手法}
-\begin{figure}
-\begin{tabular}{c|c}
-\footnotesize multi-dimensional array & \footnotesize tidy format\footnotemark[1]\\
-\hline
-\includegraphics[height=0.4\textheight]{img/anndata} & 
-\includegraphics[height=0.4\textheight]{img/ann_tidy}
-\end{tabular}
-\caption{アノテーションつきのオミクスデータ. 左右で持つ情報は同じ.}
-\end{figure}
-
-%tidy format: multi-dimensional array と持つ情報は同じだが欠測や繰り返し測定の扱いに優れる
-\setbeamertemplate{itemize item}{\color{RedOrange}$\blacktriangleright$}
+\triangleitem
 \begin{itemize}
 \item tidy format の利便性を生かしたまま行列分解ができないか？
 \end{itemize}
 
 \footnotetext[1]{Wickham H. (2019).  {\em Advanced R, second edition}. Chapman and Hall/CRC.} 
 }
+
+\section{model}
 \frame{
 \frametitle{提案モデル（準備）}
 \begin{columns}
@@ -204,7 +191,7 @@ tidy format は欠測や反復測定の扱いに優れる
 y_n \mid V, \lambda & \sim \normal\left(y_n \mid \sum_{l=1}^L \prod_{d=1}^D v_{dl}^{x_{nd}}, \lambda^{-1}\right)
 \end{align*}
 
-事前分布：区間 $(0,\infty)$ に切断された正規分布, ガンマ分布
+事前分布：区間 $(0,\infty)$ の切断正規分布, \\ガンマ分布
 \begin{align*}
 v_{dl} & \sim \truncnorm_{(0,\infty)}(v_{dl} | 0,\tau^{-1}) \quad\\
 \lambda & \sim \gam(\lambda | a,b) %（shape $=a$, rate $=b$）}%\nonumber
@@ -254,61 +241,7 @@ $)$
 \caption{$y_n$の値が大きいとき$V$の$X$ で指定される成分どうしの値が似る}
 \end{figure}
 }
-\frame{
-\frametitle{アンサンブルとしての解釈}
-\begin{align*}
-y_{n}  \approx\ &\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}} \\
-&=\frac{1}{L}\sum_{l=1}^L \underbrace{ L\exp\left( \sum_{d=1}^D x_{nd}  \cdot \log v_{dl}\right) }_{\mbox{log-linear model}}
-%&= \frac{1}{L}\sum_{l=1}^L L f_{nl} \quad \mbox{\structure{(mean of the log-linear predictor)}}
-\end{align*}
-\begin{figure}
-\begin{tikzpicture}
-\draw[thick,->,color=gray] (0,0)--(0.71,0.71); 
-\draw[thick,->,color=gray] (0,0)--(0.51,0.86);
-\draw[thick,->,color=gray](0,0)--(0.98,0.2);
-\draw[thick,->,color=RedOrange](0,0)--(0.73,0.58);
-\end{tikzpicture}
-\caption{複数の対数線形モデルの平均と捉えられる}
-\end{figure}
-}
 
-%\frame{
-%\frametitle{事前分布：非負制約}
-%\begin{align*}
-%v_{dl} & \sim \truncnorm(v_{dl} | 0,\tau^{-1})  \quad \mbox{\footnotesize 切断正規分布}\\
-%& \propto \normal(v_{dl} | 0,\tau^{-1})\one_{(0,\infty)}(v_{dl})
-%\end{align*}
-%ここで, $\one_{A}(x)$ は指示関数（$x \in A$ のとき1,さもなくば0）.
-%
-%\vspace{\baselineskip}
-%
-%\structure{Note:} 原理的には, 非負制約の有無は変数ごとに選ぶこともできるが, 今回は煩雑さを避けるためすべて非負とした.
-%}
-\frame{
-\frametitle{中間変数：分布を変える}
-\begin{itemize}
-\item $y_n$ が実数（連続値）：恒等変換
-$$
-A(z_n)=z_n.
-$$
-\item 
-$y_n$ が非負：非負化
-$$
-A(z_n)=\begin{cases}z_n, &z_n>0\\0 &z_n\leq 0\end{cases}
-$$
-\item
-$y_n$ が2値(0 or 1)：2値化
-$$
-A(z_n)=\one_{(0,\infty)}(z_n)  \quad \mbox{\footnotesize \structure{(indicator function)}}
-$$
-\item
-$y_n$ が非負の整数：離散化
-$$
-A(z_n)=\begin{cases}\lceil z_n\rceil, & z_n>0  \quad \mbox{\footnotesize \structure{(ceiling function)}}
-\\0 &z_n \leq 0\end{cases}
-$$
-\end{itemize}
-}
 \frame{
 \frametitle{切断, 非負化, 離散化}
 \begin{figure}
@@ -325,11 +258,38 @@ $$
 
 \structure{Note:} モデルの密度が0になることは対数尤度に$-\infty$の罰則をつけることと同じであるため, 分布の台が特に重要と考えた.
 }
+
+\frame{
+\frametitle{中間変数 $z_n$ の導入}
+\begin{itemize}
+\item $y_n$ が実数（連続値）：恒等変換
+$$
+A(z_n)=z_n.
+$$
+\item 
+$y_n$ が非負：非負化
+$$
+A(z_n)=\begin{cases}z_n, &z_n>0\\0 &z_n\leq 0\end{cases}
+$$
+\item
+$y_n$ が2値(0 or 1)：2値化
+$$
+A(z_n)= \begin{cases}1, &z_n>0\\0 &z_n\leq 0\end{cases}
+$$
+\item
+$y_n$ が非負の整数：離散化
+$$
+A(z_n)=\begin{cases}\lceil z_n\rceil, & z_n>0  \quad \mbox{\footnotesize \structure{(ceiling function)}}
+\\0 &z_n \leq 0\end{cases}  
+$$
+\end{itemize}
+}
+
 \frame{
 \frametitle{提案モデル}
 
 \begin{equation*}
-y_{n} = A_{m(n)}(z_{n}), \quad z_{n} \sim \mathcal{N}\left(\sum_{l=1}^L \prod_{d=1}^Dv_{dl}^{x_{nd}}, \lambda^{-1}\right)% \label{eq_mod2}    
+y_{n} = A_{m(n)}(z_{n}), \quad z_{n} \sim \mathcal{N}\left(z_n \mid \sum_{l=1}^L \prod_{d=1}^Dv_{dl}^{x_{nd}}, \lambda^{-1}\right)% \label{eq_mod2}    
 \end{equation*}
 ここで $m(n)$ は $n$ をモダリティを区別する添字に写す関数. 
 
@@ -342,33 +302,22 @@ y_{n} = A_{m(n)}(z_{n}), \quad z_{n} \sim \mathcal{N}\left(\sum_{l=1}^L \prod_{d
 \end{itemize}
 \end{block}
 }
-\frame{
-\frametitle{対数尤度}
-\begin{align*}
- \ell(v_{dl}) &=\sum_{n=1}^{N} \log p(z|V, X) = \sum_{n=1}^{N}\left(-\frac{\lambda}{2}\left\{ z_n -\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}} \right\}^2\right)+ \C\\
-&= -\frac{h_{dl}}{2}\left(v_{dl}^2-2v_{dl}\frac{\eta_{dl}}{h_{dl}}\right) +C,
-\end{align*}
-ここで,
-\begin{align*}
-\eta_{dl} &= \sum_n x_{nd} \prod_{d' \neq d} v_{dl}^{x_{nd}}\left( z_{n} - \sum_{l'\neq l} \prod_{d' \neq d} v_{dl}^{x_{nd}} \right), \quad \mbox{\footnotesize 1次の項} \\ %\label{eq_eta}\\
-h_{dl} &= \sum_n \lambda x_{nd} \prod_{d' \neq d} v_{dl}^{2x_{nd}}, \quad \mbox{\footnotesize 2次の項}% \label{eq_h}
-\end{align*}
-$v_{dl}$ に依存しない定数をまとめて $C$ とした.
-}
+\section{estimation}
 \frame{
 \frametitle{変分EMアルゴリズム（一般論）}
 
 \begin{itemize}
 \item[] データ: $\mathcal{D}=(\mathcal{D}_1,\mathcal{D}_2,\ldots,\mathcal{D}_n)$ 
-\item[] $\mathcal{D}$ 全体に影響する \structure{global} な潜在変数: $V$
+\item[] $\mathcal{D}$ 全体に影響する \structure{global} な潜在変数: $w$
 \item[] $\mathcal{D}_n$ に影響する \structure{local} な潜在変数: $z_n$ ($z=(z_1,\ldots,z_N)'$)
+\item[] 近似事後分布 $q(z_n)$, $q(w)$: 独立性を仮定
 \end{itemize}
 
 \begin{align*}
-D_{KL}(q\|p) &=\int q(z) \log \frac{q(z)}{p(z_n|\mathcal{D},w)} dz\\
-&= E_q [ \log q(z)] - E_q[\log p(z_n|\mathcal{D},w)]
+D_{KL}(q\|p) &=\int q(z) \log \frac{q(z_n)}{p(z_n|\mathcal{D},w)} dz\\
+&= E_q [ \log q(z_n)] - E_q[\log p(z_n|\mathcal{D},w)]
 \end{align*}
-$q(z) \propto  \exp( E_q[\log p(z_n|\mathcal{D},w)])$ のとき最小.
+$q(z_n) \propto  \exp( E_q[\log p(z_n|\mathcal{D},w)])$ のとき最小.
 
 
 \begin{block}{変分EMアルゴリズム}
@@ -407,12 +356,25 @@ q(-z_n) = \begin{cases}
 \end{itemize}
 }
 \frame{
+\frametitle{対数尤度}
+\begin{align*}
+ \ell(v_{dl}) &=\sum_{n=1}^{N} \log p( z _n |V, X) = \sum_{n=1}^{N}\left(-\frac{\lambda}{2}\left\{ z_n -\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}} \right\}^2\right)+ \C\\
+&= -\frac{h_{dl}}{2}\left(v_{dl}^2-2v_{dl}\frac{\eta_{dl}}{h_{dl}}\right) +C,
+\end{align*}
+ここで,
+\begin{align*}
+\eta_{dl} &= \sum_n x_{nd} \prod_{d' \neq d} v_{dl}^{x_{nd}}\left( z_{n} - \sum_{l'\neq l} \prod_{d' \neq d} v_{dl}^{x_{nd}} \right), \quad \mbox{\structure{(1次の項)}} \\ %\label{eq_eta}\\
+h_{dl} &= \sum_n \lambda x_{nd} \prod_{d' \neq d} v_{dl}^{2x_{nd}}, \quad \mbox{\structure{(2次の項)}}% \label{eq_h}
+\end{align*}
+$v_{dl}$ に依存しない定数をまとめて $C$ とした.
+}
+\frame{
 \frametitle{globalな潜在変数}
 解析的に期待値計算：
 
 $v_{dl}$ の変分事後分布は,  
 \begin{align*}
-q(v_{dl})=\truncnorm(\mu_{dl}, \sigma_{dl}) \quad \mbox{(if the prior of $v_{dl}$ is truncated)}    
+q(v_{dl})=\truncnorm_{(0, \infty)}(v_{dl} \mid \mu_{dl}, \sigma_{dl})% \quad \mbox{(if the prior of $v_{dl}$ is truncated)}    
 \end{align*}
 ここで, 
 \begin{align*}
@@ -422,7 +384,7 @@ q(v_{dl})=\truncnorm(\mu_{dl}, \sigma_{dl}) \quad \mbox{(if the prior of $v_{dl}
 
 $\lambda$ の変分事後分布は,  
 \begin{align*}
- q(\lambda) = \gam\left((N/2) E_q[ \eta_{dl}], \left(E_q[ h_{dl}] +\tau\right)/2\right). \label{qlam}
+ q(\lambda) = \gam\left(\lambda \mid (N/2) E_q[ \eta_{dl}], \left(E_q[ h_{dl}] +\tau\right)/2\right). \label{qlam}
 \end{align*}
 }
 \frame{
@@ -436,9 +398,9 @@ Evidence lower bound (ELBO):  \structure{収束の判定}と\structure{モデル
 \end{align*}
 ここでは疑似乱数でサンプリングする $z_n$ を特に $\tilde z_n$ と書いた.
 }
-
+\section{case study}
 \begin{frame}
-\frametitle{データ分析事例}
+\frametitle{データ分析事例1}
 \begin{itemize}
 \item Kostic \textit{et al.} (2015)\footnote{The dynamics of the human infant gut microbiome in development and in progression toward type 1 diabetes. Cell Host Microbe. 2015 11;17(2):260-73.}: 乳幼児の糖尿病に関する腸内細菌叢と代謝物のコホート調査
 \begin{itemize}
@@ -446,13 +408,6 @@ Evidence lower bound (ELBO):  \structure{収束の判定}と\structure{モデル
 \item 潜在変数の次元$L=3$ (ELBO)
 \item $A(z)$: 離散化, 非負化
 \item $X$: subject, feature, 日齢, 月齢, Case/Control, modality
-\end{itemize}
-\item van Zyl \textit{et al.}(2020)\footnote{Cell atlas of aqueous humor outflow pathways in eyes of humans and four model species provides insight into glaucoma pathogenesis. Proc Natl Acad Sci. 2020. 12;117(19):10339-10349.} : 5種の哺乳類（ヒト, マウス, ブタ, カニクイザル, アカゲザル）の1細胞ごとの遺伝子発現量（RNA-seq）
-\begin{itemize}
-\item 50112細胞, 2000$\times$5 遺伝子（分散の大きいもの）
-\item 潜在変数の次元 $L=10$  (ELBO, 10で打ち切り）
-\item $A(z)$: 非負化
-\item $X$: 細胞, 遺伝子と種の交互作用, ヒトの遺伝子との既知の対応
 \end{itemize}
 \end{itemize}
 \end{frame}
@@ -468,30 +423,20 @@ Evidence lower bound (ELBO):  \structure{収束の判定}と\structure{モデル
 component 1 が相対的に case (糖尿病) に多い. component 2, 3はそれぞれ \textit{Bifidobacterium}, \textit{Bacteroides} が特徴的. 
 }
 
-
 \begin{frame}
-\frametitle{交互作用項について}
-
-\begin{align*}
-f_n =  \sum_{l}\prod_{d=1}^D v_{dl}^{x_{nd}} 
-\end{align*}
-と置く. $\circ$ をアダマール積（要素ごとの積）として,
-\begin{block}{疑似コード}
+\frametitle{データ分析事例2}
 \begin{itemize}
-%\begin{flushleft}
-\item[] $X$に交互作用なし:
-$$
-f[n] = \operatorname{sum}( v^{(1)}[\mathrm{cell}[n],:] \circ v^{(2)}[\mathrm{\color{RedOrange}{gene}}[n],:]  \circ  v^{(3)}[\mathrm{\color{RoyalBlue}{species}}[n],:] )
-$$
-\item[] $X$に{\color{RedOrange}{gene} } $\times$ {\color{RoyalBlue}{species} }の交互作用:
-$$
-f[n] = \operatorname{sum}(  v^{(1)}[{\mathrm{cell}}[n],:] \circ v^{(2)}[\mathrm{\color{RedOrange}{gene}}[n], \mathrm{\color{RoyalBlue}{species}}[n],:] )
-$$
+\item van Zyl \textit{et al.}(2020)\footnote{Cell atlas of aqueous humor outflow pathways in eyes of humans and four model species provides insight into glaucoma pathogenesis. Proc Natl Acad Sci. 2020. 12;117(19):10339-10349.} : 5種の哺乳類（ヒト, マウス, ブタ, カニクイザル, アカゲザル）の1細胞ごとの遺伝子発現量（RNA-seq）
+\begin{itemize}
+\item 50112細胞, 2000$\times$5 遺伝子（分散の大きいもの）
+\item 潜在変数の次元 $L=10$  (ELBO, 10で打ち切り）
+\item $A(z)$: 非負化
+\item $X$: 細胞, 種ごとの遺伝子, ヒトの遺伝子との既知の対応
 \end{itemize}
-\end{block}
-
-遺伝子と種の交互作用は遺伝子についての潜在変数に種ごとの変化を許す
+\end{itemize}
 \end{frame}
+
+
 
 \begin{frame}
 \frametitle{ヒトの遺伝子との既知の対応}
@@ -522,22 +467,12 @@ Gm28237& - \\
 
 
 \frame{
-\frametitle{van Zyl \textit{et al.}(2020); 5種の哺乳類のRNA-seq }
-
-\begin{figure}
-\begin{tabular}{cc}
-\subfloat[A2Mに近い]{\includegraphics[width=0.48\textwidth]{img/a2m_similar10.pdf}} &
-\subfloat[MYOCに近い]{\includegraphics[width=0.48\textwidth]{img/myoc_similar10.pdf}}
-\end{tabular}
-\caption{推定された$V$を2乗距離で評価}
-\end{figure}
-}
-\frame{
 \frametitle{van Zyl \textit{et al.}(2020); A2M}
 \begin{columns}
 \begin{column}{0.5\textwidth}
 \begin{figure}
 \subfloat[A2Mに近い]{\includegraphics[width=\textwidth]{img/a2m_similar10.pdf}}
+\caption{推定された$V$を2乗距離で評価}
 \end{figure}
 \end{column}
 \begin{column}{0.5\textwidth}
@@ -559,6 +494,7 @@ Gm28237& - \\
 \begin{column}{0.5\textwidth}
 \begin{figure}
 \subfloat[MYOCに近い]{\includegraphics[width=\textwidth]{img/myoc_similar10.pdf}}
+\caption{推定された$V$を2乗距離で評価}
 \end{figure}
 \end{column}
 \begin{column}{0.5\textwidth}
@@ -574,6 +510,7 @@ Gm28237& - \\
 \end{column}
 \end{columns}
 }
+\section{conclusion}
 \frame{
 \frametitle{まとめ}
 
@@ -590,8 +527,79 @@ Gm28237& - \\
 %（g-formula）
 }
 \appendix
+
 \begin{frame}[noframenumbering]
-%\url{https://github.com/abikoushi/moltenNMF}
+\url{https://github.com/abikoushi/moltenNMF}
+\end{frame}
+
+%\frame{
+%\frametitle{van Zyl \textit{et al.}(2020); 5種の哺乳類のRNA-seq }
+%\begin{figure}
+%\begin{tabular}{cc}
+%\subfloat[A2Mに近い]{\includegraphics[width=0.48\textwidth]{img/a2m_similar10.pdf}} &
+%\subfloat[MYOCに近い]{\includegraphics[width=0.48\textwidth]{img/myoc_similar10.pdf}}
+%\end{tabular}
+%\caption{推定された$V$を2乗距離で評価}
+%\end{figure}
+%}
+\begin{frame}[noframenumbering]
+\frametitle{交互作用項について}
+
+\begin{align*}
+f_n =  \sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}} 
+\end{align*}
+と置く. $\circ$ をアダマール積（要素ごとの積）として,
+\begin{block}{疑似コード}
+\begin{itemize}
+%\begin{flushleft}
+\item[-] $X$に交互作用なし:\\
+$f[n] = \operatorname{sum}( v^{(1)}[\mathrm{cell}[n],:] \circ v^{(2)}[\mathrm{\color{RedOrange}{gene}}[n],:]  \circ  v^{(3)}[\mathrm{\color{RoyalBlue}{species}}[n],:] )$
+\item[-] $X$に{\color{RedOrange}{gene} } $\times$ {\color{RoyalBlue}{species} }の交互作用:\\
+$f[n] = \operatorname{sum}(  v^{(1)}[{\mathrm{cell}}[n],:] \circ v^{(2)}[\mathrm{\color{RedOrange}{gene}}[n], \mathrm{\color{RoyalBlue}{species}}[n],:] )$
+\end{itemize}
+\end{block}
+
+遺伝子と種の交互作用は遺伝子についての潜在変数に種ごとの変化を許す
+\end{frame}
+
+\begin{frame}[noframenumbering]
+%\frametitle{動機：分析手法}
+
+\begin{figure}
+\begin{tabular}{c|c}
+\footnotesize multi-dimensional array & \footnotesize tidy format\footnotemark[1]\\
+\hline
+\includegraphics[height=0.4\textheight]{img/anndata} & 
+\includegraphics[height=0.4\textheight]{img/ann_tidy}
+\end{tabular}
+\caption{アノテーションつきのオミクスデータ. 左右で持つ情報は同じ.}
+\end{figure}
+
+%tidy format: multi-dimensional array と持つ情報は同じだが欠測や繰り返し測定の扱いに優れる
+\setbeamertemplate{itemize item}{\color{RedOrange}$\blacktriangleright$}
+\begin{itemize}
+\item tidy format の利便性を生かしたまま行列分解ができないか？
+\end{itemize}
+
+\footnotetext[1]{Wickham H. (2019).  {\em Advanced R, second edition}. Chapman and Hall/CRC.} 
+\end{frame}
+
+\begin{frame}[noframenumbering]
+\frametitle{アンサンブルとしての解釈}
+\begin{align*}
+y_{n}  \approx\ &\sum_{l=1}^L\prod_{d=1}^D v_{dl}^{x_{nd}} \\
+&=\frac{1}{L}\sum_{l=1}^L \underbrace{ L\exp\left( \sum_{d=1}^D x_{nd}  \cdot \log v_{dl}\right) }_{\mbox{log-linear model}}
+%&= \frac{1}{L}\sum_{l=1}^L L f_{nl} \quad \mbox{\structure{(mean of the log-linear predictor)}}
+\end{align*}
+\begin{figure}
+\begin{tikzpicture}
+\draw[thick,->,color=gray] (0,0)--(0.71,0.71); 
+\draw[thick,->,color=gray] (0,0)--(0.51,0.86);
+\draw[thick,->,color=gray](0,0)--(0.98,0.2);
+\draw[thick,->,color=RedOrange](0,0)--(0.73,0.58);
+\end{tikzpicture}
+\caption{複数の対数線形モデルの平均と捉えられる}
+\end{figure}
 \end{frame}
 
 \begin{frame}[noframenumbering]
@@ -643,5 +651,18 @@ $$
 
 \begin{frame}[noframenumbering]
 \url{https://github.com/abikoushi/moltenNMF}
+\end{frame}
+
+\begin{frame}[noframenumbering]
+\frametitle{事前分布：非負制約}
+\begin{align*}
+v_{dl} & \sim \truncnorm(v_{dl} | 0,\tau^{-1})  \quad \mbox{\footnotesize 切断正規分布}\\
+& \propto \normal(v_{dl} | 0,\tau^{-1})\one_{(0,\infty)}(v_{dl})
+\end{align*}
+ここで, $\one_{A}(x)$ は指示関数（$x \in A$ のとき1,さもなくば0）.
+
+\vspace{\baselineskip}
+
+\structure{Note:} 原理的には, 非負制約の有無は変数ごとに選ぶこともできるが, 今回は煩雑さを避けるためすべて非負とした.
 \end{frame}
 \end{document} 
